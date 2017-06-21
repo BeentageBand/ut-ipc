@@ -50,13 +50,14 @@ $(_build_)_$(_curr_)_lib_name=
  ##
 $(_build_)_$(_curr_)_bin_objs=\
    $($(_build_)_OBJ_DIR)/ipc_gtest$(_obj_ext_) \
+   $($(_build_)_OBJ_DIR)/ipc_gtest_worker$(_obj_ext_) \
 
 ##
  # Library Requisites
  # e.g: $(_build_)_$(_curr_)_bin_libs=
  ##
 
-$(_build_)_$(_curr_)_bin_libs=
+$(_build_)_$(_curr_)_bin_libs=\
 $($(_build_)_LIB_DIR)/$(_lprefix_)ipc_lb$(_lib_ext_) \
 $($(_build_)_LIB_DIR)/$(_lprefix_)gtest_main$(_lib_ext_) \
 $($(_build_)_LIB_DIR)/$(_lprefix_)object$(_lib_ext_) \

@@ -13,7 +13,7 @@
 /*=====================================================================================*
  * Project Includes
  *=====================================================================================*/
-#include "hamatora_sched_evs.h"
+#include "ipc_gtest_evs.h"
 #include "worker_evs.h"
 /*=====================================================================================* 
  * Standard Includes
@@ -22,18 +22,19 @@
 /*=====================================================================================* 
  * Exported Define Macros
  *=====================================================================================*/
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 #define IPC_PRIVATE_MAIL_LIST \
-   HAMA_SCHED_PRIVATE_MAIL_LIST  \
+   IPC_GTEST_WORKER_PRIVATE_MAIL_LIST \
    WORKER_PRIVATE_MAIL_LIST  \
 
 #define IPC_SUBSCRIBABLE_MAIL_LIST \
+   IPC_GTEST_WORKER_SUBSCRIBABLE_MAIL_LIST \
    WORKER_SUBSCRIBABLE_MAIL_LIST  \
 
 #define IPC_RETRIEVE_TOUT_MS (500U)
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 /*=====================================================================================* 
  * Exported Type Declarations
  *=====================================================================================*/
