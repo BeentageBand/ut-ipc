@@ -1,0 +1,15 @@
+# Output Directories
+out
+.settings
+.cproject
+.project
+
+# Output Directories
+<<<<<<< HEAD
+=======
+out
+.settings
+.project
+.cproject
+
+>>>>>>> d5494652279629a45aae0848ee53d59a11fb3181
