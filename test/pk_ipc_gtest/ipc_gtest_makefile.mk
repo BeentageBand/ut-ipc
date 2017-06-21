@@ -53,9 +53,13 @@ $(_build_)_$(_curr_)_bin_objs=\
 
 ##
  # Library Requisites
- # e.g: $(_build_)_$(_curr_)_bin_libs=$($(_build_)_LIB_DIR)/$(_lprefix_)my_bin_lib$(_lib_ext_) \
+ # e.g: $(_build_)_$(_curr_)_bin_libs=
  ##
+
 $(_build_)_$(_curr_)_bin_libs=
+$($(_build_)_LIB_DIR)/$(_lprefix_)ipc_lb$(_lib_ext_) \
+$($(_build_)_LIB_DIR)/$(_lprefix_)gtest_main$(_lib_ext_) \
+$($(_build_)_LIB_DIR)/$(_lprefix_)object$(_lib_ext_) \
 
 ##
  # Target Binary
