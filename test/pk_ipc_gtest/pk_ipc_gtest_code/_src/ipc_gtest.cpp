@@ -14,12 +14,13 @@
  *=====================================================================================*/
 #include "gtest/gtest.h"
 #include "ipc_gtest.h"
-#include "task_ext.h"
 #include "ipc.h"
 #include "ipc_ext.h"
 #include "ipc_linux_task.h"
 #include "ipc_linux_timestamp.h"
 #include "ipc_light.h"
+#include "task_ext.h"
+#include "publisher_ext.h"
 /*=====================================================================================* 
  * Standard Includes
  *=====================================================================================*/
@@ -75,9 +76,8 @@ void IPC_get_instance(IPC_T ** singleton)
    static IPC_Linux_Timestamp_T linux_timestamp = IPC_Linux_Timestamp();
    static IPC_Light_T light = IPC_Light();
 
-   light.vtbl->ctor(&light, 0);
-   linux_task.vtbl->ctor(&linux_task, 0, &light.IPC);
-   linux_timestamp.vtbl->ctor(&linux_timestamp, 0, &linux_task.IPC_Decorator.IPC);
+   linux_task.vtbl->ctor(&linux_task,&light.IPC);
+   linux_timestamp.vtbl->ctor(&linux_timestamp, &linux_task.IPC_Decorator.IPC);
    *singleton = &linux_timestamp.IPC_Decorator.IPC;
 }
 
