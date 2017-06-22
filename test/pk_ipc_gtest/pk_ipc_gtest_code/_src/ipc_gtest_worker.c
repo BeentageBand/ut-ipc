@@ -20,7 +20,11 @@
 /*=====================================================================================* 
  * Local X-Macros
  *=====================================================================================*/
-
+#undef CLASS_VIRTUAL_METHODS
+#define CLASS_VIRTUAL_METHODS(_ovr) \
+   _ovr(Worker,on_start) \
+   _ovr(Worker,on_loop) \
+   _ovr(Worker,on_stop) \
 /*=====================================================================================* 
  * Local Define Macros
  *=====================================================================================*/
@@ -54,19 +58,8 @@ CLASS_DEFINITION
 void IPC_Gtest_Worker_init(void)
 {
    printf("%s \n", __FUNCTION__);
-   IPC_Gtest_Worker_Obj.Worker = Worker();
-
-   memcpy(&IPC_Gtest_Worker_Vtbl.Worker, IPC_Gtest_Worker_Obj.Worker.vtbl, sizeof(IPC_Gtest_Worker_Vtbl.Worker));
-   IPC_Gtest_Worker_Vtbl.Worker.Task.Object.rtti = &IPC_Gtest_Worker_Rtti;
-   IPC_Gtest_Worker_Vtbl.Worker.Task.Object.destroy = IPC_Gtest_Worker_Dtor;
-   IPC_Gtest_Worker_Vtbl.Worker.on_start = IPC_Gtest_Worker_on_start;
-   IPC_Gtest_Worker_Vtbl.Worker.on_loop = IPC_Gtest_Worker_on_loop;
-   IPC_Gtest_Worker_Vtbl.Worker.on_stop = IPC_Gtest_Worker_on_stop;
+   CHILD_CLASS_INITIALIZATION
    IPC_Gtest_Worker_Vtbl.ctor = IPC_Gtest_Worker_ctor;
-
-   IPC_Gtest_Worker_Obj.vtbl = &IPC_Gtest_Worker_Vtbl;
-
-   Object_update_info(&IPC_Gtest_Worker_Obj.Worker.Task.Object, Worker().rtti->rtti);
 }
 
 void IPC_Gtest_Worker_shut(void) {}
