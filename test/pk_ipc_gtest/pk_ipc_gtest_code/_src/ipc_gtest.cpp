@@ -80,9 +80,14 @@ void IPC_get_instance(IPC_T ** singleton)
    static IPC_Linux_Task_T linux_task = IPC_Linux_Task();
    static IPC_Linux_Timestamp_T linux_timestamp = IPC_Linux_Timestamp();
    static IPC_Light_T light = IPC_Light();
+   static bool_t once = false;
 
-   linux_task.vtbl->ctor(&linux_task,&light.IPC);
-   linux_timestamp.vtbl->ctor(&linux_timestamp, &linux_task.IPC_Decorator.IPC);
+   if(!once)
+   {
+      linux_task.vtbl->ctor(&linux_task,&light.IPC);
+      linux_timestamp.vtbl->ctor(&linux_timestamp, &linux_task.IPC_Decorator.IPC);
+   }
+
    *singleton = &linux_timestamp.IPC_Decorator.IPC;
 }
 
