@@ -16,6 +16,10 @@
 #include "ipc_gtest.h"
 #include "task_ext.h"
 #include "ipc.h"
+#include "ipc_ext.h"
+#include "ipc_linux_task.h"
+#include "ipc_linux_timestamp.h"
+#include "ipc_light.h"
 /*=====================================================================================* 
  * Standard Includes
  *=====================================================================================*/
@@ -39,7 +43,6 @@
 /*=====================================================================================* 
  * Local Object Definitions
  *=====================================================================================*/
-
 static IPC_Mail_Id_T Gtest_Mailist[] =
 {
       IPC_GTEST_SUBS
@@ -55,7 +58,34 @@ static IPC_Mail_Id_T Gtest_Mailist[] =
 /*=====================================================================================* 
  * Local Function Definitions
  *=====================================================================================*/
+bool_t Task_Register_To_Process(Task_T * const task)
+{
+   return true;
+}
 
+bool_t Task_Unregister_To_Process(Task_T * const task)
+{
+   return true;
+}
+
+
+void IPC_get_instance(IPC_T ** singleton)
+{
+   static IPC_Linux_Task_T linux_task = IPC_Linux_Task();
+   static IPC_Linux_Timestamp_T linux_timestamp = IPC_Linux_Timestamp();
+   static IPC_Light_T light = IPC_Light();
+
+   light.vtbl->ctor(&light, 0);
+   linux_task.vtbl->ctor(&linux_task, 0, &light.IPC);
+   linux_timestamp.vtbl->ctor(&linux_timestamp, 0, &linux_task.IPC_Decorator.IPC);
+   *singleton = &linux_timestamp.IPC_Decorator.IPC;
+}
+
+
+void Publisher_get_instance(Publisher_T ** singleton)
+{
+
+}
 /*=====================================================================================* 
  * Exported Function Definitions
  *=====================================================================================*/
@@ -69,9 +99,9 @@ TEST(Init, tasks)
    w1.vtbl->ctor(&w1, IPC_GTEST_1_WORKER, 64);
    w2.vtbl->ctor(&w2, IPC_GTEST_2_WORKER, 64);
 
-   Task_register_to_process(NULL);
-   IPC_create_mailbox(64, 256);
-   IPC_task_ready();
+   Task_Register_To_Process(NULL);
+   IPC_Create_Mailbox(64, 256);
+   IPC_Task_Ready();
 
    w1.Worker.Task.vtbl->run(&w1.Worker.Task);
    w2.Worker.Task.vtbl->run(&w2.Worker.Task);
@@ -83,7 +113,7 @@ TEST(Retrieve_mail, mail)
 
    for(uint8_t i = 2; i; --i)
    {
-      mail = IPC_retreive_mail(IPC_RETRIEVE_TOUT_MS);
+      mail = IPC_Retreive_Mail(IPC_RETRIEVE_TOUT_MS);
       ASSERT_FALSE(NULL == mail);
       EXPECT_EQ(mail->mail_id, IPC_GTEST_EV);
    }
@@ -92,33 +122,33 @@ TEST(Retrieve_mail, mail)
 
 TEST(Retrieve_Mail, timeout)
 {
-   IPC_Timestamp_T timestamp = IPC_RETRIEVE_TOUT_MS + IPC_timestamp();
-   Mail_T * mail = IPC_retreive_mail(IPC_RETRIEVE_TOUT_MS);
+   IPC_Timestamp_T timestamp = IPC_RETRIEVE_TOUT_MS + IPC_Timestamp();
+   Mail_T * mail = IPC_Retreive_Mail(IPC_RETRIEVE_TOUT_MS);
 
-   EXPECT_TRUE(IPC_time_elapsed(timestamp));
+   EXPECT_TRUE(IPC_Time_Elapsed(timestamp));
    ASSERT_TRUE(NULL == mail);
 }
 
 TEST(Publish, mail)
 {
-   IPC_publish(IPC_GTEST_SUBS, NULL, 0);
+   IPC_Publish(IPC_GTEST_SUBS, NULL, 0);
 
-   if(IPC_subscribe_mail_list(Gtest_Mailist, sizeof(Gtest_Mailist)) )
+   if(IPC_Subscribe_Mail_List(Gtest_Mailist, sizeof(Gtest_Mailist)) )
    {
       Mail_T * mail = NULL;
 
       for(uint8_t i = 2; i; --i)
       {
-         mail = IPC_retreive_from_mail_list(Gtest_Mailist,
+         mail = IPC_Retreive_From_Mail_List(Gtest_Mailist,
                sizeof(Gtest_Mailist), IPC_RETRIEVE_TOUT_MS);
          ASSERT_FALSE(NULL == mail);
          EXPECT_EQ(mail->mail_id, IPC_GTEST_SUBS);
       }
-      mail = IPC_retreive_from_mail_list(Gtest_Mailist,
+      mail = IPC_Retreive_From_Mail_List(Gtest_Mailist,
                      sizeof(Gtest_Mailist), IPC_RETRIEVE_TOUT_MS);
       ASSERT_TRUE(NULL == mail);
 
-      bool_t success = IPC_unsubscribe_mail_list(Gtest_Mailist, sizeof(Gtest_Mailist));
+      bool_t success = IPC_Unsubscribe_Mail_List(Gtest_Mailist, sizeof(Gtest_Mailist));
       ASSERT_TRUE(success);
    }
    else
@@ -130,7 +160,7 @@ TEST(Publish, mail)
 
 TEST(Shutdown, mail)
 {
-   IPC_broadcast(WORKER_SHUTDOWN, NULL, 0);
+   IPC_Broadcast(WORKER_SHUTDOWN, NULL, 0);
 }
 
 /*=====================================================================================* 
