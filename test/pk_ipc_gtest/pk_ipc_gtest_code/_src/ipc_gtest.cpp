@@ -61,14 +61,19 @@ static IPC_Mail_Id_T Gtest_Mailist[] =
  *=====================================================================================*/
 bool_t Task_Register_To_Process(Task_T * const task)
 {
-   return true;
+   IPC_T * ipc = NULL;
+   IPC_get_instance(&ipc);
+   Isnt_Nullptr(ipc, false);
+   return ipc->vtbl->register_task(ipc, task);
 }
 
 bool_t Task_Unregister_To_Process(Task_T * const task)
 {
-   return true;
+   IPC_T * ipc = NULL;
+   IPC_get_instance(&ipc);
+   Isnt_Nullptr(ipc, false);
+   return ipc->vtbl->unregister_task(ipc, task);
 }
-
 
 void IPC_get_instance(IPC_T ** singleton)
 {
@@ -103,8 +108,9 @@ TEST(Init, tasks)
    IPC_Create_Mailbox(64, 256);
    IPC_Task_Ready();
 
-   w1.Worker.Task.vtbl->run(&w1.Worker.Task);
-   w2.Worker.Task.vtbl->run(&w2.Worker.Task);
+   IPC_Run(GTEST_FWK_WORKER);
+   IPC_Run(IPC_GTEST_1_WORKER);
+   IPC_Run(IPC_GTEST_2_WORKER);
 }
 
 TEST(Retrieve_mail, mail)
