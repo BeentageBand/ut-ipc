@@ -20,7 +20,6 @@
 #include "ipc_linux_timestamp.h"
 #include "ipc_light.h"
 #include "task_ext.h"
-#include "publisher_ext.h"
 /*=====================================================================================* 
  * Standard Includes
  *=====================================================================================*/
@@ -89,12 +88,6 @@ void IPC_get_instance(IPC_T ** singleton)
    }
 
    *singleton = &linux_timestamp.IPC_Decorator.IPC;
-}
-
-
-void Publisher_get_instance(Publisher_T ** singleton)
-{
-
 }
 /*=====================================================================================* 
  * Exported Function Definitions
