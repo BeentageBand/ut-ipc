@@ -8,37 +8,15 @@
 #=======================================================================================#
 # DEFINE PACKAGE RULE
 #=======================================================================================#
-define $(_build_)_$(_curr_)_MAKE
+define $(_flavor_)_$(_feat_)_MAKE
 #=======================================================================================#
 # OBJECTS DIRECTORY
 # e.g: 
-#     $(_build_)_$(_curr_)_src_dir=pk_module_N_code/_src
+#     $(_flavor_)_$(_feat_)_src_dir=pk_module_N_code/_src
 #     or
-#     $(_build_)_$(_curr_)_src_dir=_src
+#     $(_flavor_)_$(_feat_)_src_dir=_src
 #=======================================================================================#
-$(_build_)_$(_curr_)_src_dir=pk_ipc_gtest_code/_src
-
-#=======================================================================================#
-# LIB REQUISITES
-#=======================================================================================#
-
-##
- # Object Requisites
- # e.g: $(_build_)_$(_curr_)_lib_objs=$($(_build_)_OBJ_DIR)/my_lib_obj$(_obj_ext_) \
- ##
-$(_build_)_$(_curr_)_lib_objs=
-
-##
- # Library Requisites
- # e.g: $(_build_)_$(_curr_)_lib_libs=$($(_build_)_LIB_DIR)/$(_lprefix_)my_lib_lib$(_lib_ext_) \
- ##
-$(_build_)_$(_curr_)_lib_libs=
-
-##
- # Target Library
- # e.g: $(_build_)_$(_curr_)_lib_name=my_lib_name
- ##
-$(_build_)_$(_curr_)_lib_name=
+$(_flavor_)_$(_feat_)_inc=ipc_gtest.h ipc_gtest_evs.h ipc_gtest_ext.h
 
 #=======================================================================================#
 # BIN REQUISITES
@@ -46,27 +24,25 @@ $(_build_)_$(_curr_)_lib_name=
 
 ##
  # Object Requisites
- # e.g: $(_build_)_$(_curr_)_bin_objs=$($(_build_)_OBJ_DIR)/my_bin_obj$(_obj_ext_) \
+ # e.g: $(_flavor_)_$(_feat_)_bin_objs=$($(_flavor_)_OBJ_DIR)/my_bin_obj$(_obj_ext_) \
  ##
-$(_build_)_$(_curr_)_bin_objs=\
-   $($(_build_)_OBJ_DIR)/ipc_gtest$(_obj_ext_) \
-   $($(_build_)_OBJ_DIR)/ipc_gtest_worker$(_obj_ext_) \
+$(_flavor_)_$(_feat_)_bin_objs= ipc_gtest ipc_gtest_worker
 
 ##
  # Library Requisites
- # e.g: $(_build_)_$(_curr_)_bin_libs=
+ # e.g: $(_flavor_)_$(_feat_)_bin_libs=
  ##
 
-$(_build_)_$(_curr_)_bin_libs=\
-$($(_build_)_LIB_DIR)/$(_lprefix_)ipc_lb$(_lib_ext_) \
-$($(_build_)_LIB_DIR)/$(_lprefix_)gtest_main$(_lib_ext_) \
-$($(_build_)_LIB_DIR)/$(_lprefix_)object$(_lib_ext_) \
+$(_flavor_)_$(_feat_)_bin_libs=\
+ipc \
+gtest_main \
+object \
 
 ##
  # Target Binary
- # e.g: $(_build_)_$(_curr_)_bin_name=my_bin_name
+ # e.g: $(_flavor_)_$(_feat_)_bin=my_bin
  ##
-$(_build_)_$(_curr_)_bin_name=ipc_gtest
+$(_flavor_)_$(_feat_)_bin=ipc_gtest
 #=======================================================================================#
 # END PACKAGE RULE
 #=======================================================================================#
@@ -90,7 +66,7 @@ endef
 #=======================================================================================#
 # INCLUDE PK PROJECT UTILITY
 #=======================================================================================#
-include $($(_build_)_PROJECT_DIR)/$($(_build_)_MAK_DIR)/epilog.mk
+include $(PROJ_MAK_DIR)/epilog.mk
 #=======================================================================================#
 # ipc_gtest_makefile.mk
 #=======================================================================================#
