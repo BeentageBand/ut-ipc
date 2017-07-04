@@ -1,5 +1,5 @@
 #=======================================================================================#
-# ipc_gtest_makefile.mk
+# ipc_gtest_make.mk
 #=======================================================================================#
 #  Created on: Oct 3, 2015
 #      Author: puch
@@ -26,7 +26,7 @@ $(_flavor_)_$(_feat_)_inc=ipc_gtest.h ipc_gtest_evs.h ipc_gtest_ext.h
  # Object Requisites
  # e.g: $(_flavor_)_$(_feat_)_bin_objs=$($(_flavor_)_OBJ_DIR)/my_bin_obj$(_obj_ext_) \
  ##
-$(_flavor_)_$(_feat_)_bin_objs= ipc_gtest ipc_gtest_worker
+$(_flavor_)_$(_feat_)_bin_objs=ipc_gtest ipc_gtest_worker
 
 ##
  # Library Requisites
@@ -34,7 +34,7 @@ $(_flavor_)_$(_feat_)_bin_objs= ipc_gtest ipc_gtest_worker
  ##
 
 $(_flavor_)_$(_feat_)_bin_libs=\
-ipc \
+ipc_lb \
 gtest_main \
 object \
 
@@ -68,7 +68,7 @@ endef
 #=======================================================================================#
 include $(PROJ_MAK_DIR)/epilog.mk
 #=======================================================================================#
-# ipc_gtest_makefile.mk
+# ipc_gtest_make.mk
 #=======================================================================================#
 # Changes Log
 #

@@ -1,0 +1,15 @@
+[submodule "project_make"]
+	path = project_make
+	url = https://github.com/BeentageBand/project_make
+[submodule "ipc"]
+	path = ipc
+	url = https://github.com/BeentageBand/ipc
+[submodule "support/gtest_fwk"]
+	path = support/gtest_fwk
+	url = https://github.com/BeentageBand/gtest_fwk
+[submodule "support/object"]
+	path = support/object
+	url = https://github.com/BeentageBand/object
+[submodule "support/template"]
+	path = support/template
+	url = https://github.com/BeentageBand/template
