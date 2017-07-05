@@ -1,6 +1,6 @@
 /*=====================================================================================*/
 /**
- * ipc_gtest.h
+ * ipc_gtest_worker_evs.h
  * author : puch
  * date : Oct 22 2015
  *
@@ -8,12 +8,12 @@
  *
  */
 /*=====================================================================================*/
-#ifndef IPC_GTEST_H_
-#define IPC_GTEST_H_
+#ifndef IPC_GTEST_WORKER_H_
+#define IPC_GTEST_WORKER_H_
 /*=====================================================================================*
  * Project Includes
  *=====================================================================================*/
-#include "worker.h"
+
 /*=====================================================================================* 
  * Standard Includes
  *=====================================================================================*/
@@ -21,24 +21,16 @@
 /*=====================================================================================* 
  * Exported Define Macros
  *=====================================================================================*/
-#undef CLASS_NAME
-#undef CLASS_INHERITS
-#undef CLASS_MEMBERS
-#undef CLASS_METHODS
+#define IPC_GTEST_WORKER_PRIVATE_MAIL_LIST \
+   PRIVATE_MAIL(IPC_GTEST_EV,             "MAILS TO SHUTDOWN WORKER") \
 
-#define CLASS_NAME IPC_Gtest_Worker
-#define CLASS_INHERITS Worker
-#define CLASS_MEMBERS(_member)
-#define CLASS_METHODS(_method, _void_method) \
-void _method(ctor, IPC_Task_Id_T const, uint32_t const)
+#define IPC_GTEST_WORKER_SUBSCRIBABLE_MAIL_LIST \
+   SUBSCRIBABLE_MAIL(IPC_GTEST_SUBS, "MAILS TO ANY SUBSCRIBABLE") \
 
-#ifdef __cplusplus
-extern "C" {
-#endif
 /*=====================================================================================* 
  * Exported Type Declarations
  *=====================================================================================*/
-CLASS_DECLARATION
+
 /*=====================================================================================* 
  * Exported Object Declarations
  *=====================================================================================*/
@@ -50,13 +42,11 @@ CLASS_DECLARATION
 /*=====================================================================================* 
  * Exported Function Like Macros
  *=====================================================================================*/
-#ifdef __cplusplus
-}
-#endif
+
 /*=====================================================================================* 
- * ipc_gtest.h
+ * ipc_gtest_worker_evs.h
  *=====================================================================================*
  * Log History
  *
  *=====================================================================================*/
-#endif /*IPC_GTEST_H_*/
+#endif /*IPC_GTEST_WORKER_H_*/

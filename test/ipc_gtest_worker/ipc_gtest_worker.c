@@ -1,6 +1,6 @@
 /*=====================================================================================*/
 /**
- * ipc_gtest.c
+ * ipc_gtest_worker.c
  * author : puch
  * date : Oct 22 2015
  *
@@ -99,7 +99,7 @@ void IPC_Gtest_Worker_on_stop(Worker_T * const super)
    printf("IPC_Gtest_Worker_on_stop\n %d\n", this->Worker.Task.tid);
 }
 /*=====================================================================================* 
- * ipc_gtest.c
+ * ipc_gtest_worker.c
  *=====================================================================================*
  * Log History
  *
