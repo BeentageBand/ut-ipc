@@ -1,6 +1,6 @@
 /*=====================================================================================*/
 /**
- * ipc_gtest.c
+ * gtest_task.cpp
  * author : puch
  * date : Oct 22 2015
  *
@@ -13,7 +13,8 @@
  * Project Includes
  *=====================================================================================*/
 #include "ipc.h"
-#include "ipc_gtest.h"
+#include "gtest_task_ext.h"
+#include "gtest_task.h"
 /*=====================================================================================* 
  * Standard Includes
  *=====================================================================================*/
@@ -37,14 +38,15 @@
 /*=====================================================================================* 
  * Local Function Prototypes
  *=====================================================================================*/
-static void IPC_Gtest_Worker_ctor(IPC_Gtest_Worker_T * const this, IPC_Task_Id_T const tid, uint32_t const mailbox_size);
-static void IPC_Gtest_Worker_on_start(Worker_T * const super);
-static void IPC_Gtest_Worker_on_loop(Worker_T * const super);
-static void IPC_Gtest_Worker_on_stop(Worker_T * const super);
+static void Gtest_Task_ctor(Gtest_Task_T * const this, IPC_Task_Id_T const tid, uint32_t const mailbox_size);
+static void Gtest_Task_on_start(Worker_T * const super);
+static void Gtest_Task_on_loop(Worker_T * const super);
+static void Gtest_Task_on_stop(Worker_T * const super);
 /*=====================================================================================* 
  * Local Object Definitions
  *=====================================================================================*/
 CLASS_DEFINITION
+static Gtest_Task_T test;
 /*=====================================================================================* 
  * Exported Object Definitions
  *=====================================================================================*/
@@ -52,54 +54,51 @@ CLASS_DEFINITION
 /*=====================================================================================* 
  * Local Inline-Function Like Macros
  *=====================================================================================*/
+int main(void)
+{
+   test = Gtest_Task();
 
+   test.vtbl->ctor(&test, GTEST_FWK_WORKER,64);
+   IPC_Run(GTEST_FWK_WORKER);
+
+   IPC_Wait(GTEST_FWK_WORKER);
+}
 /*=====================================================================================* 
  * Local Function Definitions
  *=====================================================================================*/
-void IPC_Gtest_Worker_init(void)
+void Gtest_Task_init(void)
 {
    CHILD_CLASS_INITIALIZATION
-   IPC_Gtest_Worker_Vtbl.ctor = IPC_Gtest_Worker_ctor;
+   Gtest_Task_Vtbl.ctor = Gtest_Task_ctor;
 }
 
-void IPC_Gtest_Worker_shut(void) {}
+void Gtest_Task_shut(void) {}
 
-void IPC_Gtest_Worker_Dtor(Object_T * const obj)
-{
-}
+void Gtest_Task_Dtor(Object_T * const obj)
+{}
 /*=====================================================================================* 
  * Exported Function Definitions
  *=====================================================================================*/
-void IPC_Gtest_Worker_ctor(IPC_Gtest_Worker_T * const this, IPC_Task_Id_T const tid, uint32_t const mailbox_size)
+void Gtest_Task_ctor(Gtest_Task_T * const this, IPC_Task_Id_T const tid, uint32_t const mailbox_size)
 {
    this->Worker.vtbl->ctor(&this->Worker, tid, mailbox_size);
 }
 
-void IPC_Gtest_Worker_on_start(Worker_T * const super)
+void Gtest_Task_on_start(Worker_T * const super)
+{}
+
+void Gtest_Task_on_loop(Worker_T * const super)
 {
-   IPC_Gtest_Worker_T * const this = _dynamic_cast(IPC_Gtest_Worker, super);
+   Gtest_Task_T * const this = _dynamic_cast(Gtest_Task, super);
    Isnt_Nullptr(this, );
-   printf("IPC_Gtest_Worker_on_start %d\n", this->Worker.Task.tid);
+   Gtest_Task_Cbk();
+   IPC_Send(GTEST_FWK_WORKER, WORKER_SHUTDOWN, NULL, 0);
 }
 
-void IPC_Gtest_Worker_on_loop(Worker_T * const super)
-{
-   IPC_Gtest_Worker_T * const this = _dynamic_cast(IPC_Gtest_Worker, super);
-   Isnt_Nullptr(this, );
-   printf("IPC_Gtest_Worker_on_loop %d\n", this->Worker.Task.tid);
-
-   uint32_t timestamp = IPC_Timestamp() + 1000U;
-   while(!IPC_Time_Elapsed(timestamp)){}
-}
-
-void IPC_Gtest_Worker_on_stop(Worker_T * const super)
-{
-   IPC_Gtest_Worker_T * const this = _dynamic_cast(IPC_Gtest_Worker, super);
-   Isnt_Nullptr(this, );
-   printf("IPC_Gtest_Worker_on_stop\n %d\n", this->Worker.Task.tid);
-}
+void Gtest_Task_on_stop(Worker_T * const super)
+{}
 /*=====================================================================================* 
- * ipc_gtest.c
+ * gtest_task.c
  *=====================================================================================*
  * Log History
  *

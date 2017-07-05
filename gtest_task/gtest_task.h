@@ -1,6 +1,6 @@
 /*=====================================================================================*/
 /**
- * ipc_uset.h
+ * gtest_task.h
  * author : puch
  * date : Oct 22 2015
  *
@@ -8,26 +8,29 @@
  *
  */
 /*=====================================================================================*/
-#ifndef IPC_USET_H_
-#define IPC_USET_H_
+#ifndef GTEST_TASK_H_
+#define GTEST_TASK_H_
 /*=====================================================================================*
  * Project Includes
  *=====================================================================================*/
-
+#include "worker.h"
 /*=====================================================================================* 
  * Standard Includes
  *=====================================================================================*/
 
-/*=====================================================================================*
+/*=====================================================================================* 
  * Exported Define Macros
  *=====================================================================================*/
-#define IPC_WORKERS_IDS(TASK_ID) \
-TASK_ID(SINGLE, GTEST_FWK, "Gtest Framework") \
-TASK_ID(SINGLE, IPC_GTEST_1 ," desc") \
-TASK_ID(SINGLE, IPC_GTEST_2 ," desc") \
+#undef CLASS_NAME
+#undef CLASS_INHERITS
+#undef CLASS_MEMBERS
+#undef CLASS_METHODS
 
-#undef TASK_ID
-#define TASK_ID(pid, task, description) task##_WORKER,
+#define CLASS_NAME Gtest_Task
+#define CLASS_INHERITS Worker
+#define CLASS_MEMBERS(_member)
+#define CLASS_METHODS(_method, _void_method) \
+void _method(ctor, IPC_Task_Id_T const, uint32_t const)\
 
 #ifdef __cplusplus
 extern "C" {
@@ -35,7 +38,7 @@ extern "C" {
 /*=====================================================================================* 
  * Exported Type Declarations
  *=====================================================================================*/
-
+CLASS_DECLARATION
 /*=====================================================================================* 
  * Exported Object Declarations
  *=====================================================================================*/
@@ -43,24 +46,7 @@ extern "C" {
 /*=====================================================================================* 
  * Exported Function Prototypes
  *=====================================================================================*/
-#undef IPC_TASK_ID
-#define IPC_TASK_ID(task, description) task,
-enum
-{
-   IPC_BEGIN_TASK_ID = 0,
-   IPC_WORKERS_IDS(TASK_ID)
-   IPC_TOTAL_TASK_IDS_ITEMS
-};
 
-#undef PROCESS_ID
-#define PROCESS_ID(pid, task, description) task##_PROCESS = IPC_##pid##_PROCESS,
-enum
-{
-
-   IPC_SINGLE_PROCESS,
-   IPC_WORKERS_IDS(PROCESS_ID)
-   IPC_TOTAL_PROCESS_IDS_ITEMS
-};
 /*=====================================================================================* 
  * Exported Function Like Macros
  *=====================================================================================*/
@@ -68,9 +54,9 @@ enum
 }
 #endif
 /*=====================================================================================* 
- * ipc_uset.h
+ * gtest_task.h
  *=====================================================================================*
  * Log History
  *
  *=====================================================================================*/
-#endif /*IPC_USET_H_*/
+#endif /*GTEST_TASK_H_*/

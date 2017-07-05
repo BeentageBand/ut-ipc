@@ -13,3 +13,6 @@
 [submodule "support/template"]
 	path = support/template
 	url = https://github.com/BeentageBand/template
+[submodule "support/dbg_log"]
+	path = support/dbg_log
+	url = https://github.com/BeentageBand/dbg_log

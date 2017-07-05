@@ -1,5 +1,5 @@
 #=======================================================================================#
-# ipc_gtest_make.mk
+# gtest_task_make.mk
 #=======================================================================================#
 #  Created on: Oct 3, 2015
 #      Author: puch
@@ -16,35 +16,23 @@ define $(_flavor_)_$(_feat_)_MAKE
 #     or
 #     $(_flavor_)_$(_feat_)_src_dir=_src
 #=======================================================================================#
-$(_flavor_)_$(_feat_)_inc=ipc_gtest.h ipc_gtest_evs.h ipc_gtest_ext.h
+$(_flavor_)_$(_feat_)_inc=gtest_task.h gtest_task_ext.h
 
 #=======================================================================================#
-# BIN REQUISITES
+# LIB REQUISITES
 #=======================================================================================#
 
 ##
  # Object Requisites
  # e.g: $(_flavor_)_$(_feat_)_bin_objs=$($(_flavor_)_OBJ_DIR)/my_bin_obj$(_obj_ext_) \
  ##
-$(_flavor_)_$(_feat_)_bin_objs=ipc_gtest ipc_gtest_worker
+$(_flavor_)_$(_feat_)_lib_objs=gtest_task
 
 ##
- # Library Requisites
- # e.g: $(_flavor_)_$(_feat_)_bin_libs=
- ##
-
-$(_flavor_)_$(_feat_)_bin_libs=\
-dbg_log \
-gtest_task \
-gtest \
-ipc_lb \
-object \
-
-##
- # Target Binary
+ # Target Library
  # e.g: $(_flavor_)_$(_feat_)_bin=my_bin
  ##
-$(_flavor_)_$(_feat_)_bin=ipc_gtest
+$(_flavor_)_$(_feat_)_lib=gtest_task
 #=======================================================================================#
 # END PACKAGE RULE
 #=======================================================================================#
@@ -70,7 +58,7 @@ endef
 #=======================================================================================#
 include $(PROJ_MAK_DIR)/epilog.mk
 #=======================================================================================#
-# ipc_gtest_make.mk
+# gtest_task_make.mk
 #=======================================================================================#
 # Changes Log
 #

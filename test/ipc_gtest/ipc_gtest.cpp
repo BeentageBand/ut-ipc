@@ -20,10 +20,13 @@
 #include "ipc_linux_timestamp.h"
 #include "ipc_light.h"
 #include "task_ext.h"
+#include "gtest_task.h"
+#include "gtest_task_ext.h"
 /*=====================================================================================* 
  * Standard Includes
  *=====================================================================================*/
-
+#include <iostream>
+#include <unistd.h>
 /*=====================================================================================* 
  * Local X-Macros
  *=====================================================================================*/
@@ -94,11 +97,9 @@ void IPC_get_instance(IPC_T ** singleton)
  *=====================================================================================*/
 TEST(Init, tasks)
 {
-   static Task_T test = Task();
    static IPC_Gtest_Worker_T w1 = IPC_Gtest_Worker();
    static IPC_Gtest_Worker_T w2 = IPC_Gtest_Worker();
 
-   test.vtbl->ctor(&test, GTEST_FWK_WORKER);
    w1.vtbl->ctor(&w1, IPC_GTEST_1_WORKER, 64);
    w2.vtbl->ctor(&w2, IPC_GTEST_2_WORKER, 64);
 
@@ -106,9 +107,17 @@ TEST(Init, tasks)
    IPC_Create_Mailbox(64, 256);
    IPC_Task_Ready();
 
-   IPC_Run(GTEST_FWK_WORKER);
    IPC_Run(IPC_GTEST_1_WORKER);
    IPC_Run(IPC_GTEST_2_WORKER);
+
+   ASSERT_EQ(GTEST_FWK_WORKER, IPC_Self_Task_Id());
+}
+
+TEST(Timestamp, functions)
+{
+   EXPECT_TRUE(0 < IPC_Timestamp());
+
+   EXPECT_TRUE(IPC_Time_Elapsed(IPC_Timestamp()));
 }
 
 TEST(Retrieve_mail, mail)
@@ -121,7 +130,6 @@ TEST(Retrieve_mail, mail)
       ASSERT_FALSE(NULL == mail);
       EXPECT_EQ(mail->mail_id, IPC_GTEST_EV);
    }
-
 }
 
 TEST(Retrieve_Mail, timeout)
@@ -165,6 +173,17 @@ TEST(Publish, mail)
 TEST(Shutdown, mail)
 {
    IPC_Broadcast(WORKER_SHUTDOWN, NULL, 0);
+//   IPC_Wait(IPC_GTEST_1_WORKER);
+//   IPC_Wait(IPC_GTEST_2_WORKER);
+}
+
+int Gtest_Task_Cbk(void)
+{
+   std::cout << "Gtest_Task_Cbk main()\n";
+   char ** argv = NULL;
+   int argc = 0;
+   testing::InitGoogleTest(&argc, argv);
+   return RUN_ALL_TESTS();
 }
 
 /*=====================================================================================* 
