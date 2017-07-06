@@ -8,8 +8,8 @@
  *
  */
 /*=====================================================================================*/
-#ifndef IPC_GTEST_WORKER_H_
-#define IPC_GTEST_WORKER_H_
+#ifndef IPC_GTEST_WORKER_EVS_H_
+#define IPC_GTEST_WORKER_EVS_H_
 /*=====================================================================================*
  * Project Includes
  *=====================================================================================*/
@@ -22,10 +22,10 @@
  * Exported Define Macros
  *=====================================================================================*/
 #define IPC_GTEST_WORKER_PRIVATE_MAIL_LIST \
-   PRIVATE_MAIL(IPC_GTEST_EV,             "MAILS TO SHUTDOWN WORKER") \
+   PRIVATE_MAIL(IPC_GTEST_EV_MID,             "MAILS TO SHUTDOWN WORKER") \
 
 #define IPC_GTEST_WORKER_SUBSCRIBABLE_MAIL_LIST \
-   SUBSCRIBABLE_MAIL(IPC_GTEST_SUBS, "MAILS TO ANY SUBSCRIBABLE") \
+   SUBSCRIBABLE_MAIL(IPC_GTEST_SUBS_MID, "MAILS TO ANY SUBSCRIBABLE") \
 
 /*=====================================================================================* 
  * Exported Type Declarations
@@ -49,4 +49,4 @@
  * Log History
  *
  *=====================================================================================*/
-#endif /*IPC_GTEST_WORKER_H_*/
+#endif /*IPC_GTEST_WORKER_EVS_H_*/

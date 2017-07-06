@@ -13,7 +13,7 @@
  * Project Includes
  *=====================================================================================*/
 #include "ipc.h"
-#include "ipc_gtest.h"
+#include "ipc_gtest_worker.h"
 /*=====================================================================================* 
  * Standard Includes
  *=====================================================================================*/
@@ -89,6 +89,7 @@ void IPC_Gtest_Worker_on_loop(Worker_T * const super)
    printf("IPC_Gtest_Worker_on_loop %d\n", this->Worker.Task.tid);
 
    uint32_t timestamp = IPC_Timestamp() + 1000U;
+
    while(!IPC_Time_Elapsed(timestamp)){}
 }
 

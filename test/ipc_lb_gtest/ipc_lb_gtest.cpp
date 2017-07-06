@@ -13,15 +13,14 @@
  * Project Includes
  *=====================================================================================*/
 #include "gtest/gtest.h"
-#include "ipc_gtest.h"
+#include "gtest_task_ext.h"
 #include "ipc.h"
 #include "ipc_ext.h"
+#include "ipc_gtest_worker.h"
+#include "ipc_light.h"
 #include "ipc_linux_task.h"
 #include "ipc_linux_timestamp.h"
-#include "ipc_light.h"
 #include "task_ext.h"
-#include "gtest_task.h"
-#include "gtest_task_ext.h"
 /*=====================================================================================* 
  * Standard Includes
  *=====================================================================================*/
@@ -48,7 +47,7 @@
  *=====================================================================================*/
 static IPC_Mail_Id_T Gtest_Mailist[] =
 {
-      IPC_GTEST_SUBS
+      IPC_GTEST_SUBS_MID
 };
 /*=====================================================================================* 
  * Exported Object Definitions
@@ -128,7 +127,7 @@ TEST(Retrieve_mail, mail)
    {
       mail = IPC_Retreive_Mail(IPC_RETRIEVE_TOUT_MS);
       ASSERT_FALSE(NULL == mail);
-      EXPECT_EQ(mail->mail_id, IPC_GTEST_EV);
+      EXPECT_EQ(mail->mail_id, IPC_GTEST_EV_MID);
    }
 }
 
@@ -143,7 +142,7 @@ TEST(Retrieve_Mail, timeout)
 
 TEST(Publish, mail)
 {
-   IPC_Publish(IPC_GTEST_SUBS, NULL, 0);
+   IPC_Publish(IPC_GTEST_SUBS_MID, NULL, 0);
 
    if(IPC_Subscribe_Mail_List(Gtest_Mailist, sizeof(Gtest_Mailist)) )
    {
@@ -154,7 +153,7 @@ TEST(Publish, mail)
          mail = IPC_Retreive_From_Mail_List(Gtest_Mailist,
                sizeof(Gtest_Mailist), IPC_RETRIEVE_TOUT_MS);
          ASSERT_FALSE(NULL == mail);
-         EXPECT_EQ(mail->mail_id, IPC_GTEST_SUBS);
+         EXPECT_EQ(mail->mail_id, IPC_GTEST_SUBS_MID);
       }
       mail = IPC_Retreive_From_Mail_List(Gtest_Mailist,
                      sizeof(Gtest_Mailist), IPC_RETRIEVE_TOUT_MS);
@@ -172,7 +171,7 @@ TEST(Publish, mail)
 
 TEST(Shutdown, mail)
 {
-   IPC_Broadcast(WORKER_SHUTDOWN, NULL, 0);
+   IPC_Broadcast(WORKER_SHUTDOWN_MID, NULL, 0);
 //   IPC_Wait(IPC_GTEST_1_WORKER);
 //   IPC_Wait(IPC_GTEST_2_WORKER);
 }
