@@ -121,7 +121,7 @@ TEST(Timestamp, functions)
 
 TEST(Retrieve_mail, mail)
 {
-   Mail_T * mail = NULL;
+   Mail_T const * mail = NULL;
 
    for(uint8_t i = 2; i; --i)
    {
@@ -134,7 +134,7 @@ TEST(Retrieve_mail, mail)
 TEST(Retrieve_Mail, timeout)
 {
    IPC_Timestamp_T timestamp = IPC_RETRIEVE_TOUT_MS + IPC_Timestamp();
-   Mail_T * mail = IPC_Retreive_Mail(IPC_RETRIEVE_TOUT_MS);
+   Mail_T const * mail = IPC_Retreive_Mail(IPC_RETRIEVE_TOUT_MS);
 
    EXPECT_TRUE(IPC_Time_Elapsed(timestamp));
    ASSERT_TRUE(NULL == mail);
@@ -146,7 +146,7 @@ TEST(Publish, mail)
 
    if(IPC_Subscribe_Mail_List(Gtest_Mailist, sizeof(Gtest_Mailist)) )
    {
-      Mail_T * mail = NULL;
+      Mail_T const * mail = NULL;
 
       for(uint8_t i = 2; i; --i)
       {

@@ -91,7 +91,7 @@ TEST_P(Mailbox_Test_Obj, Push_Mail)
 
    GMailbox.vtbl->push_mail(&GMailbox, &mail);
 
-   Mail_T * actual_mail = GMailbox.vtbl->get_first_mail(&GMailbox);
+   Mail_T const * actual_mail = GMailbox.vtbl->pop_mail(&GMailbox);
 
    ASSERT_FALSE(NULL == actual_mail);
    EXPECT_EQ(mail.mail_id, actual_mail->mail_id);
@@ -99,7 +99,26 @@ TEST_P(Mailbox_Test_Obj, Push_Mail)
    mail.object_vtbl->destroy(&mail.object);
 }
 
+TEST_P(Mailbox_Test_Obj, Pop_Mail)
+{
+   Mail_T const * mail = GMailbox.vtbl->pop_mail(&GMailbox);
+
+   ASSERT_FALSE(NULL == mail);
+   EXPECT_EQ(GetParam().mid, mail->mail_id);
+   EXPECT_EQ(GetParam().tid, mail->sender_task);
+   EXPECT_EQ(GetParam().tid, mail->receiver_task);
+   EXPECT_EQ(0U, mail->data_size);
+   ASSERT_TRUE(NULL == mail->data);
+}
+
 INSTANTIATE_TEST_CASE_P(Mailist, Mailbox_Test_Obj, ::testing::ValuesIn(MailData));
+
+TEST(Mailbox, dump)
+{
+   GMailbox.vtbl->dump(&GMailbox);
+   EXPECT_EQ(0U, GMailbox.mailbox.size);
+   EXPECT_TRUE(GMailbox.mailbox.vtbl->empty(&GMailbox.mailbox));
+}
 /*=====================================================================================* 
  * mailbox_gtest.cpp
  *=====================================================================================*
