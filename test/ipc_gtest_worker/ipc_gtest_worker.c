@@ -9,9 +9,12 @@
  */
 /*=====================================================================================*/
 #define CLASS_IMPLEMENTATION
+#undef Dbg_FID
+#define Dbg_FID Dbg_FID_Def(IPC_FID,0)
 /*=====================================================================================*
  * Project Includes
  *=====================================================================================*/
+#include "dbg_log.h"
 #include "ipc.h"
 #include "ipc_gtest_worker.h"
 /*=====================================================================================* 
@@ -79,14 +82,14 @@ void IPC_Gtest_Worker_on_start(Worker_T * const super)
 {
    IPC_Gtest_Worker_T * const this = _dynamic_cast(IPC_Gtest_Worker, super);
    Isnt_Nullptr(this, );
-   printf("IPC_Gtest_Worker_on_start %d\n", this->Worker.Task.tid);
+   Dbg_Warn("IPC_Gtest_Worker_on_start %d", this->Worker.Task.tid);
 }
 
 void IPC_Gtest_Worker_on_loop(Worker_T * const super)
 {
    IPC_Gtest_Worker_T * const this = _dynamic_cast(IPC_Gtest_Worker, super);
    Isnt_Nullptr(this, );
-   printf("IPC_Gtest_Worker_on_loop %d\n", this->Worker.Task.tid);
+   Dbg_Warn("IPC_Gtest_Worker_on_loop %d", this->Worker.Task.tid);
 
    uint32_t timestamp = IPC_Timestamp() + 1000U;
 
@@ -97,7 +100,7 @@ void IPC_Gtest_Worker_on_stop(Worker_T * const super)
 {
    IPC_Gtest_Worker_T * const this = _dynamic_cast(IPC_Gtest_Worker, super);
    Isnt_Nullptr(this, );
-   printf("IPC_Gtest_Worker_on_stop\n %d\n", this->Worker.Task.tid);
+   Dbg_Warn("IPC_Gtest_Worker_on_stop %d", this->Worker.Task.tid);
 }
 /*=====================================================================================* 
  * ipc_gtest_worker.c
