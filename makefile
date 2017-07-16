@@ -11,8 +11,8 @@
 PROJ_DIR=.
 PROJ_MAK_DIR=$(PROJ_DIR)/project_make
 
-host_GTEST_PATH=$(PROJ_DIR)/support/gtest_fwk/gtest
-linux_GTEST_PATH=$(PROJ_DIR)/support/gtest_fwk/gtest
+host_GTEST_PATH=$(PROJ_DIR)/support/gtest_fwk/googletest/googletest
+linux_GTEST_PATH=$(PROJ_DIR)/support/gtest_fwk/googletest/googletest
 
 #=======================================================================================#
 # PROJECT DEFINES 
