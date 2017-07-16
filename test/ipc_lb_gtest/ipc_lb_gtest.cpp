@@ -187,11 +187,9 @@ TEST(Shutdown, mail)
 //   IPC_Wait(IPC_GTEST_2_WORKER);
 }
 
-int Gtest_Task_Cbk(void)
+int Gtest_Task_Cbk(int argc, char ** argv)
 {
    std::cout << "Gtest_Task_Cbk main()\n";
-   char ** argv = NULL;
-   int argc = 0;
    testing::InitGoogleTest(&argc, argv);
    return RUN_ALL_TESTS();
 }

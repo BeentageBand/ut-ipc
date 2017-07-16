@@ -28,9 +28,12 @@
 
 #define CLASS_NAME Gtest_Task
 #define CLASS_INHERITS Task
-#define CLASS_MEMBERS(_member)
+#define CLASS_MEMBERS(_member) \
+_member(int _private, argc) \
+_member(char ** _private, argv) \
+
 #define CLASS_METHODS(_method, _void_method) \
-void _method(ctor, IPC_Task_Id_T const)\
+void _method(ctor, IPC_Task_Id_T const, int argc, char ** argv)\
 
 #ifdef __cplusplus
 extern "C" {

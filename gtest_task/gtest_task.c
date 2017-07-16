@@ -39,7 +39,7 @@
 /*=====================================================================================* 
  * Local Function Prototypes
  *=====================================================================================*/
-static void Gtest_Task_ctor(Gtest_Task_T * const this, IPC_Task_Id_T const tid);
+static void Gtest_Task_ctor(Gtest_Task_T * const this, IPC_Task_Id_T const tid, int argc, char ** argv);
 static void Gtest_Task_run(Task_T * const super);
 /*=====================================================================================* 
  * Local Object Definitions
@@ -53,11 +53,11 @@ static Gtest_Task_T test;
 /*=====================================================================================* 
  * Local Inline-Function Like Macros
  *=====================================================================================*/
-int main(void)
+int main(int argc, char ** argv)
 {
    test = Gtest_Task();
 
-   test.vtbl->ctor(&test, GTEST_FWK_WORKER);
+   test.vtbl->ctor(&test, GTEST_FWK_WORKER, argc, argv);
 
    IPC_Run(GTEST_FWK_WORKER);
 
@@ -79,9 +79,11 @@ void Gtest_Task_Dtor(Object_T * const obj)
 /*=====================================================================================* 
  * Exported Function Definitions
  *=====================================================================================*/
-void Gtest_Task_ctor(Gtest_Task_T * const this, IPC_Task_Id_T const tid)
+void Gtest_Task_ctor(Gtest_Task_T * const this, IPC_Task_Id_T const tid, int argc, char ** argv)
 {
    this->Task.vtbl->ctor(&this->Task, tid);
+   this->argc = argc;
+   this->argv = argv;
 }
 
 void Gtest_Task_run(Task_T * const super)
@@ -93,7 +95,7 @@ void Gtest_Task_run(Task_T * const super)
    Gtest_Task_T * const this = _dynamic_cast(Gtest_Task, super);
 
    Isnt_Nullptr(this, );
-   Gtest_Task_Cbk();
+   Gtest_Task_Cbk(this->argc, this->argv);
 
    IPC_Destroy_Mailbox();
 }
