@@ -13,6 +13,8 @@
  * Project Includes
  *=====================================================================================*/
 #include "gtest/gtest.h"
+#include "publisher.h"
+#include "mailbox.h"
 /*=====================================================================================* 
  * Standard Includes
  *=====================================================================================*/
@@ -36,7 +38,7 @@
 /*=====================================================================================* 
  * Local Object Definitions
  *=====================================================================================*/
-
+static Mailbox_T Subscribable_Mbx;
 /*=====================================================================================* 
  * Exported Object Definitions
  *=====================================================================================*/
@@ -52,8 +54,37 @@
 /*=====================================================================================* 
  * Exported Function Definitions
  *=====================================================================================*/
-TEST(Publisher, tasks)
+TEST(Publisher, Subscribe)
 {
+   IPC_Mail_Id_T mid = IPC_GTEST_SUBS_MID;
+   Subscribable_Mbx = Mailbox();
+
+   Subscribable_Mbx.vtbl->ctor(&Subscribable_Mbx, GTEST_FWK_WORKER, 23, 40);
+
+   ASSERT_TRUE( Publisher_subscribe(&Subscribable_Mbx, mid) );
+}
+
+TEST(Publisher, Publish)
+{
+   Mail_T mail = Mail();
+   mail.vtbl->ctor(&mail,0, 0, IPC_GTEST_SUBS_MID, NULL, 0);
+   Publisher_publish_mail(&mail);
+
+   Mail_T const * retrieved_mail = Subscribable_Mbx.vtbl->pop_mail(&Subscribable_Mbx, 2000U);
+   ASSERT_FALSE(NULL == retrieved_mail);
+   EXPECT_EQ(IPC_GTEST_SUBS_MID, retrieved_mail->mail_id );
+
+   mail.vtbl->set_mail_id(&mail, IPC_GTEST_EV_MID);
+   Publisher_publish_mail(&mail);
+   retrieved_mail = Subscribable_Mbx.vtbl->pop_mail(&Subscribable_Mbx, 2000U);
+   ASSERT_TRUE(NULL == retrieved_mail);
+}
+
+TEST(Publisher, Unsubscribe)
+{
+   IPC_Mail_Id_T mid = IPC_GTEST_SUBS_MID;
+   ASSERT_TRUE( Publisher_unsubscribe(&Subscribable_Mbx, mid ) );
+   _delete(&Subscribable_Mbx);
 }
 
 /*=====================================================================================* 

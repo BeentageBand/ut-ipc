@@ -13,7 +13,7 @@
 /*=====================================================================================*
  * Project Includes
  *=====================================================================================*/
-#include "worker.h"
+#include "task.h"
 /*=====================================================================================* 
  * Standard Includes
  *=====================================================================================*/
@@ -27,10 +27,10 @@
 #undef CLASS_METHODS
 
 #define CLASS_NAME Gtest_Task
-#define CLASS_INHERITS Worker
+#define CLASS_INHERITS Task
 #define CLASS_MEMBERS(_member)
 #define CLASS_METHODS(_method, _void_method) \
-void _method(ctor, IPC_Task_Id_T const, uint32_t const)\
+void _method(ctor, IPC_Task_Id_T const)\
 
 #ifdef __cplusplus
 extern "C" {

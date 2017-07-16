@@ -22,8 +22,8 @@
  * Exported X-Macros
  *=====================================================================================*/
 #define DBG_FID_LIST(FID) \
-   FID(GTEST_FID, DBG_INFO, "Gtest Framework ID") \
-   FID(IPC_FID, DBG_INFO, "IPC ID") \
+   FID(GTEST_FID, DBG_WARN, "Gtest Framework ID") \
+   FID(IPC_FID, DBG_WARN, "IPC ID") \
 /*=====================================================================================* 
  * Exported Define Macros
  *=====================================================================================*/

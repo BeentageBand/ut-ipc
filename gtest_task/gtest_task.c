@@ -1,6 +1,6 @@
 /*=====================================================================================*/
 /**
- * gtest_task.cpp
+ * gtest_task.c
  * author : puch
  * date : Oct 22 2015
  *
@@ -9,24 +9,25 @@
  */
 /*=====================================================================================*/
 #define CLASS_IMPLEMENTATION
+#undef Dbg_FID
+#define Dbg_FID Dbg_FID_Def(GTEST_FID, 1)
 /*=====================================================================================*
  * Project Includes
  *=====================================================================================*/
+#include "dbg_log.h"
 #include "ipc.h"
 #include "gtest_task_ext.h"
 #include "gtest_task.h"
 /*=====================================================================================* 
  * Standard Includes
  *=====================================================================================*/
-
+#include <unistd.h>
 /*=====================================================================================* 
  * Local X-Macros
  *=====================================================================================*/
 #undef CLASS_VIRTUAL_METHODS
 #define CLASS_VIRTUAL_METHODS(_ovr) \
-   _ovr(Worker,on_start) \
-   _ovr(Worker,on_loop) \
-   _ovr(Worker,on_stop) \
+   _ovr(Task,run) \
 /*=====================================================================================* 
  * Local Define Macros
  *=====================================================================================*/
@@ -38,10 +39,8 @@
 /*=====================================================================================* 
  * Local Function Prototypes
  *=====================================================================================*/
-static void Gtest_Task_ctor(Gtest_Task_T * const this, IPC_Task_Id_T const tid, uint32_t const mailbox_size);
-static void Gtest_Task_on_start(Worker_T * const super);
-static void Gtest_Task_on_loop(Worker_T * const super);
-static void Gtest_Task_on_stop(Worker_T * const super);
+static void Gtest_Task_ctor(Gtest_Task_T * const this, IPC_Task_Id_T const tid);
+static void Gtest_Task_run(Task_T * const super);
 /*=====================================================================================* 
  * Local Object Definitions
  *=====================================================================================*/
@@ -58,7 +57,8 @@ int main(void)
 {
    test = Gtest_Task();
 
-   test.vtbl->ctor(&test, GTEST_FWK_WORKER,64);
+   test.vtbl->ctor(&test, GTEST_FWK_WORKER);
+
    IPC_Run(GTEST_FWK_WORKER);
 
    IPC_Wait(GTEST_FWK_WORKER);
@@ -79,24 +79,24 @@ void Gtest_Task_Dtor(Object_T * const obj)
 /*=====================================================================================* 
  * Exported Function Definitions
  *=====================================================================================*/
-void Gtest_Task_ctor(Gtest_Task_T * const this, IPC_Task_Id_T const tid, uint32_t const mailbox_size)
+void Gtest_Task_ctor(Gtest_Task_T * const this, IPC_Task_Id_T const tid)
 {
-   this->Worker.vtbl->ctor(&this->Worker, tid, mailbox_size);
+   this->Task.vtbl->ctor(&this->Task, tid);
 }
 
-void Gtest_Task_on_start(Worker_T * const super)
-{}
-
-void Gtest_Task_on_loop(Worker_T * const super)
+void Gtest_Task_run(Task_T * const super)
 {
+   Dbg_Info("Gtest_Task_run");
+   IPC_Create_Mailbox(64, 80);
+   IPC_Task_Ready();
+
    Gtest_Task_T * const this = _dynamic_cast(Gtest_Task, super);
+
    Isnt_Nullptr(this, );
    Gtest_Task_Cbk();
-   IPC_Send(GTEST_FWK_WORKER, WORKER_SHUTDOWN_MID, NULL, 0);
-}
 
-void Gtest_Task_on_stop(Worker_T * const super)
-{}
+   IPC_Destroy_Mailbox();
+}
 /*=====================================================================================* 
  * gtest_task.c
  *=====================================================================================*

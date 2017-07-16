@@ -91,7 +91,7 @@ TEST_P(Mailbox_Test_Obj, Push_Mail)
 
    GMailbox.vtbl->push_mail(&GMailbox, &mail);
 
-   Mail_T const * actual_mail = GMailbox.vtbl->pop_mail(&GMailbox);
+   Mail_T const * actual_mail = GMailbox.vtbl->pop_mail(&GMailbox, 500);
 
    ASSERT_FALSE(NULL == actual_mail);
    EXPECT_EQ(mail.mail_id, actual_mail->mail_id);

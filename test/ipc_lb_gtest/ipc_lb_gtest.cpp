@@ -9,10 +9,13 @@
  */
 /*=====================================================================================*/
 #define CLASS_IMPLEMENTATION
+#undef Dbg_FID
+#define Dbg_FID Dbg_FID_Def(GTEST_FID,1)
 /*=====================================================================================*
  * Project Includes
  *=====================================================================================*/
 #include "gtest/gtest.h"
+#include "dbg_log.h"
 #include "gtest_task_ext.h"
 #include "ipc.h"
 #include "ipc_ext.h"
@@ -109,6 +112,7 @@ TEST(Init, tasks)
    IPC_Run(IPC_GTEST_1_WORKER);
    IPC_Run(IPC_GTEST_2_WORKER);
 
+   sleep(1);
    ASSERT_EQ(GTEST_FWK_WORKER, IPC_Self_Task_Id());
 }
 
@@ -116,16 +120,23 @@ TEST(Timestamp, functions)
 {
    EXPECT_TRUE(0 < IPC_Timestamp());
 
-   EXPECT_TRUE(IPC_Time_Elapsed(IPC_Timestamp()));
+   IPC_Timestamp_T sleep_ms = IPC_Timestamp() + 1000U;
+   EXPECT_FALSE(IPC_Time_Elapsed(sleep_ms));
+   Dbg_Warn("sleep_ms = %u", sleep_ms);
+
+   sleep(2);
+   EXPECT_TRUE(IPC_Time_Elapsed(sleep_ms));
 }
 
 TEST(Retrieve_mail, mail)
 {
    Mail_T const * mail = NULL;
-
+   IPC_Send(IPC_GTEST_1_WORKER, IPC_GTEST_EV_MID, NULL, 0);
+   IPC_Send(IPC_GTEST_2_WORKER, IPC_GTEST_EV_MID, NULL, 0);
+   sleep(1);
    for(uint8_t i = 2; i; --i)
    {
-      mail = IPC_Retreive_Mail(IPC_RETRIEVE_TOUT_MS);
+      mail = IPC_Retreive_Mail(2000);
       ASSERT_FALSE(NULL == mail);
       EXPECT_EQ(mail->mail_id, IPC_GTEST_EV_MID);
    }
@@ -135,7 +146,7 @@ TEST(Retrieve_Mail, timeout)
 {
    IPC_Timestamp_T timestamp = IPC_RETRIEVE_TOUT_MS + IPC_Timestamp();
    Mail_T const * mail = IPC_Retreive_Mail(IPC_RETRIEVE_TOUT_MS);
-
+   sleep(1);
    EXPECT_TRUE(IPC_Time_Elapsed(timestamp));
    ASSERT_TRUE(NULL == mail);
 }
@@ -151,7 +162,7 @@ TEST(Publish, mail)
       for(uint8_t i = 2; i; --i)
       {
          mail = IPC_Retreive_From_Mail_List(Gtest_Mailist,
-               sizeof(Gtest_Mailist), IPC_RETRIEVE_TOUT_MS);
+               sizeof(Gtest_Mailist), 2000);
          ASSERT_FALSE(NULL == mail);
          EXPECT_EQ(mail->mail_id, IPC_GTEST_SUBS_MID);
       }

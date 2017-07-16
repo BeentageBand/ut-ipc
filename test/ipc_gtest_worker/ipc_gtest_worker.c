@@ -20,7 +20,7 @@
 /*=====================================================================================* 
  * Standard Includes
  *=====================================================================================*/
-
+#include <unistd.h>
 /*=====================================================================================* 
  * Local X-Macros
  *=====================================================================================*/
@@ -82,25 +82,38 @@ void IPC_Gtest_Worker_on_start(Worker_T * const super)
 {
    IPC_Gtest_Worker_T * const this = _dynamic_cast(IPC_Gtest_Worker, super);
    Isnt_Nullptr(this, );
-   Dbg_Warn("IPC_Gtest_Worker_on_start %d", this->Worker.Task.tid);
+   Dbg_Info("IPC_Gtest_Worker_on_start %d", this->Worker.Task.tid);
 }
 
 void IPC_Gtest_Worker_on_loop(Worker_T * const super)
 {
    IPC_Gtest_Worker_T * const this = _dynamic_cast(IPC_Gtest_Worker, super);
    Isnt_Nullptr(this, );
-   Dbg_Warn("IPC_Gtest_Worker_on_loop %d", this->Worker.Task.tid);
+   Dbg_Info("IPC_Gtest_Worker_on_loop %d", this->Worker.Task.tid);
 
-   uint32_t timestamp = IPC_Timestamp() + 1000U;
+   Mail_T const * mail = IPC_Retreive_Mail(IPC_RETRIEVE_TOUT_MS);
 
-   while(!IPC_Time_Elapsed(timestamp)){}
+   if(NULL != mail)
+   {
+      Dbg_Info("mail not null mid %d", mail->mail_id);
+
+      switch(mail->mail_id)
+      {
+      case IPC_GTEST_EV_MID:
+         Dbg_Info("Gtest Worker  Handles mid IPC_GTEST_EV_MID");
+         IPC_Send(GTEST_FWK_WORKER, IPC_GTEST_EV_MID, NULL, 0);
+         break;
+      default: break;
+      }
+   }
+   sleep(0.1);
 }
 
 void IPC_Gtest_Worker_on_stop(Worker_T * const super)
 {
    IPC_Gtest_Worker_T * const this = _dynamic_cast(IPC_Gtest_Worker, super);
    Isnt_Nullptr(this, );
-   Dbg_Warn("IPC_Gtest_Worker_on_stop %d", this->Worker.Task.tid);
+   Dbg_Info("IPC_Gtest_Worker_on_stop %d", this->Worker.Task.tid);
 }
 /*=====================================================================================* 
  * ipc_gtest_worker.c
