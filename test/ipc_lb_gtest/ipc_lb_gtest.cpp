@@ -63,22 +63,6 @@ static IPC_Mail_Id_T Gtest_Mailist[] =
 /*=====================================================================================* 
  * Local Function Definitions
  *=====================================================================================*/
-bool_t Task_Register_To_Process(Task_T * const task)
-{
-   IPC_T * ipc = NULL;
-   IPC_get_instance(&ipc);
-   Isnt_Nullptr(ipc, false);
-   return ipc->vtbl->register_task(ipc, task);
-}
-
-bool_t Task_Unregister_To_Process(Task_T * const task)
-{
-   IPC_T * ipc = NULL;
-   IPC_get_instance(&ipc);
-   Isnt_Nullptr(ipc, false);
-   return ipc->vtbl->unregister_task(ipc, task);
-}
-
 void IPC_get_instance(IPC_T ** singleton)
 {
    static IPC_Linux_Task_T linux_task = IPC_Linux_Task();

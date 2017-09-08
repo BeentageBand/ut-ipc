@@ -25,9 +25,7 @@
 /*=====================================================================================* 
  * Local X-Macros
  *=====================================================================================*/
-#undef CLASS_VIRTUAL_METHODS
-#define CLASS_VIRTUAL_METHODS(_ovr) \
-   _ovr(Task,run) \
+
 /*=====================================================================================* 
  * Local Define Macros
  *=====================================================================================*/
@@ -39,12 +37,11 @@
 /*=====================================================================================* 
  * Local Function Prototypes
  *=====================================================================================*/
-static void Gtest_Task_ctor(Gtest_Task_T * const this, IPC_Task_Id_T const tid, int argc, char ** argv);
-static void Gtest_Task_run(Task_T * const super);
+
 /*=====================================================================================* 
  * Local Object Definitions
  *=====================================================================================*/
-CLASS_DEFINITION
+CLASS_DEF(Gtest_Task)
 static Gtest_Task_T test;
 /*=====================================================================================* 
  * Exported Object Definitions
@@ -66,24 +63,28 @@ int main(int argc, char ** argv)
 /*=====================================================================================* 
  * Local Function Definitions
  *=====================================================================================*/
-void Gtest_Task_init(void)
+void Gtest_Task_Init(void)
 {
-   CHILD_CLASS_INITIALIZATION
-   Gtest_Task_Vtbl.ctor = Gtest_Task_ctor;
+   Gtest_Task_Class.run = Gtest_Task_run;
 }
 
-void Gtest_Task_shut(void) {}
 
 void Gtest_Task_Dtor(Object_T * const obj)
 {}
 /*=====================================================================================* 
  * Exported Function Definitions
  *=====================================================================================*/
-void Gtest_Task_ctor(Gtest_Task_T * const this, IPC_Task_Id_T const tid, int argc, char ** argv)
+union Gtest_Task Gtest_Task_Main(IPC_Task_Id_T const tid, int argc, char ** argv)
 {
-   this->Task.vtbl->ctor(&this->Task, tid);
-   this->argc = argc;
-   this->argv = argv;
+	union Gtest_Task this = Gtest_Task_Default();
+	Object_Update_Info(&this.Object, & Task_Tid(tid).Object, sizeof(this.Task));
+   this.argc = argc;
+   this.argv = argv;
+   return this;
+}
+union Gtest_Task * Gtest_Task_Main_New(IPC_Task_Id_T const tid, int argc, char ** argv)
+{
+	Constructor_New_Impl(Gtest_Task, Main, tid, argc, argv);
 }
 
 void Gtest_Task_run(Task_T * const super)

@@ -50,8 +50,6 @@ typedef bool bool_t;
  *=====================================================================================*/
 #define Num_Elems(array) (sizeof(array)/sizeof(array[0]))
 #define Isnt_Nullptr(obj, retval) if(NULL == obj) return retval
-#define _concat(a,b) Make_concat(a,b)
-#define Make_concat(a,b) a##b
 
 #ifdef __cplusplus
 }

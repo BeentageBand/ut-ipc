@@ -21,15 +21,9 @@
 /*=====================================================================================* 
  * Exported Define Macros
  *=====================================================================================*/
-#undef CLASS_NAME
-#undef CLASS_INHERITS
-#undef CLASS_MEMBERS
-#undef CLASS_METHODS
-
-#define CLASS_NAME IPC_Gtest_Worker
-#define CLASS_INHERITS Worker
-#define CLASS_MEMBERS(_member)
-#define CLASS_METHODS(_method, _void_method) \
+#define IPC_Gtest_Worker_INHERITS Worker
+#define IPC_Gtest_Worker_MEMBERS(_member, _class)
+#define IPC_Gtest_Worker_METHODS(_method, _class) \
 void _method(ctor, IPC_Task_Id_T const, uint32_t const)
 
 #ifdef __cplusplus
@@ -38,7 +32,7 @@ extern "C" {
 /*=====================================================================================* 
  * Exported Type Declarations
  *=====================================================================================*/
-CLASS_DECLARATION
+CLASS_DECL(IPC_Gtest_Worker)
 /*=====================================================================================* 
  * Exported Object Declarations
  *=====================================================================================*/
@@ -46,7 +40,7 @@ CLASS_DECLARATION
 /*=====================================================================================* 
  * Exported Function Prototypes
  *=====================================================================================*/
-
+union IPC_Gtest_Worker IPC_Gtest_Worker(IPC_Task_Id_T const tid, uint32_t const size);
 /*=====================================================================================* 
  * Exported Function Like Macros
  *=====================================================================================*/

@@ -21,19 +21,12 @@
 /*=====================================================================================* 
  * Exported Define Macros
  *=====================================================================================*/
-#undef CLASS_NAME
-#undef CLASS_INHERITS
-#undef CLASS_MEMBERS
-#undef CLASS_METHODS
-
-#define CLASS_NAME Gtest_Task
-#define CLASS_INHERITS Task
-#define CLASS_MEMBERS(_member) \
+#define Gtest_Task_INHERITS Task
+#define Gtest_Task_MEMBERS(_member, _class) \
 _member(int _private, argc) \
 _member(char ** _private, argv) \
 
-#define CLASS_METHODS(_method, _void_method) \
-void _method(ctor, IPC_Task_Id_T const, int argc, char ** argv)\
+#define Gtest_Task_METHODS(_method, _class)
 
 #ifdef __cplusplus
 extern "C" {
@@ -41,7 +34,7 @@ extern "C" {
 /*=====================================================================================* 
  * Exported Type Declarations
  *=====================================================================================*/
-CLASS_DECLARATION
+CLASS_DECL(Gtest_Task)
 /*=====================================================================================* 
  * Exported Object Declarations
  *=====================================================================================*/
@@ -49,7 +42,8 @@ CLASS_DECLARATION
 /*=====================================================================================* 
  * Exported Function Prototypes
  *=====================================================================================*/
-
+extern union Gtest_Task Gtest_Task_Main(IPC_Task_Id_T const, int argc, char ** argv);
+extern union Gtest_Task * Gtest_Task_Main_New(IPC_Task_Id_T const, int argc, char ** argv);
 /*=====================================================================================* 
  * Exported Function Like Macros
  *=====================================================================================*/
