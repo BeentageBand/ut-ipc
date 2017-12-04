@@ -7,12 +7,12 @@
 [submodule "support/gtest_fwk"]
 	path = support/gtest_fwk
 	url = https://github.com/BeentageBand/gtest_fwk
-[submodule "support/object"]
-	path = support/object
-	url = https://github.com/BeentageBand/object
 [submodule "support/template"]
 	path = support/template
 	url = https://github.com/BeentageBand/template
 [submodule "support/dbg_log"]
 	path = support/dbg_log
 	url = https://github.com/BeentageBand/dbg_log
+[submodule "support/cobject"]
+	path = support/cobject
+	url = https://github.com/BeentageBand/cobject
