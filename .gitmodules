@@ -1,18 +1,18 @@
 [submodule "project_make"]
 	path = project_make
-	url = https://github.com/BeentageBand/project_make
+	url = git@github.com:BeentageBand/project_make
 [submodule "ipc"]
 	path = ipc
-	url = https://github.com/BeentageBand/ipc
+	url = git@github.com:BeentageBand/ipc
 [submodule "support/gtest_fwk"]
 	path = support/gtest_fwk
-	url = https://github.com/BeentageBand/gtest_fwk
+	url = git@github.com:BeentageBand/gtest_fwk
 [submodule "support/template"]
 	path = support/template
-	url = https://github.com/BeentageBand/template
+	url = git@github.com:BeentageBand/template
 [submodule "support/dbg_log"]
 	path = support/dbg_log
-	url = https://github.com/BeentageBand/dbg_log
+	url = git@github.com:BeentageBand/dbg_log
 [submodule "support/cobject"]
 	path = support/cobject
-	url = https://github.com/BeentageBand/cobject
+	url = git@github.com:BeentageBand/cobject
