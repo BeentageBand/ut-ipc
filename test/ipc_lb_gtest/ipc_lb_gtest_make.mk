@@ -13,7 +13,7 @@ dbg_log \
 gtest_task \
 ipc_gtest_worker \
 gtest \
-ipc_lb \
+ipc \
 cobject \
 
 $(_flavor_)_$(_feat_)_bin=ipc_gtest

@@ -1,56 +1,22 @@
-/*=====================================================================================*/
-/**
- * ipc_gtest_worker.h
- * author : puch
- * date : Oct 22 2015
- *
- * description : Any comments
- *
- */
-/*=====================================================================================*/
 #ifndef IPC_GTEST_WORKER_H_
 #define IPC_GTEST_WORKER_H_
-/*=====================================================================================*
- * Project Includes
- *=====================================================================================*/
+ 
 #include "worker.h"
-/*=====================================================================================* 
- * Standard Includes
- *=====================================================================================*/
-
-/*=====================================================================================* 
- * Exported Define Macros
- *=====================================================================================*/
-#define IPC_Gtest_Worker_INHERITS Worker
-#define IPC_Gtest_Worker_MEMBERS(_member, _class)
-#define IPC_Gtest_Worker_METHODS(_method, _class) \
-void _method(ctor, IPC_Task_Id_T const, uint32_t const)
-
+ 
 #ifdef __cplusplus
 extern "C" {
 #endif
-/*=====================================================================================* 
- * Exported Type Declarations
- *=====================================================================================*/
-CLASS_DECL(IPC_Gtest_Worker)
-/*=====================================================================================* 
- * Exported Object Declarations
- *=====================================================================================*/
+ 
+typedef union Worker IPC_Gtest_Worker;
+typedef union Worker_Class IPC_Gtest_Worker_Class;
 
-/*=====================================================================================* 
- * Exported Function Prototypes
- *=====================================================================================*/
-union IPC_Gtest_Worker IPC_Gtest_Worker(IPC_Task_Id_T const tid, uint32_t const size);
-/*=====================================================================================* 
- * Exported Function Like Macros
- *=====================================================================================*/
+extern IPC_Gtest_Worker_Class _private IPC_Gtest_Worker_Class; 
+
+extern void Populate_IPC_Gtest_Worker(IPC_Gtest_Worker_T * const ipc_gtest_wrkr,
+		IPC_TID_T const tid, union Mail * const mail_buff, size_t const mail_size);
+ 
 #ifdef __cplusplus
 }
 #endif
-/*=====================================================================================* 
- * ipc_gtest_worker.h
- *=====================================================================================*
- * Log History
- *
- *=====================================================================================*/
+ 
 #endif /*IPC_GTEST_WORKER_H_*/

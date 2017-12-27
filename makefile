@@ -13,9 +13,11 @@ linux_build=linux
 
 host_PROJ_INC+=\
 $(PROJ_DIR:%=%/include) \
+include/linux
 
 linux_PROJ_INC+=\
 $(PROJ_DIR:%=%/include) \
+include/linux
 
 endef
 
