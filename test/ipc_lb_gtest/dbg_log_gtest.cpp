@@ -7,8 +7,8 @@
 
 TEST(Dbg_Log, Info)
 {
-   Dbg_Verb("Log Verbose %s %d", "\"String\"", 200);
-   Dbg_Info("Log Info %s %d", "\"String\"", 200);
-   Dbg_Warn("Log Warn %s %d", "\"String\"", 200);
-   Dbg_Fault("Log Fault %s %d", "\"String\"", 200);
+   Dbg_Verb("Log Verbose %d %s", 200, "String");
+   Dbg_Info("Log Info %d %s", 200, "String");
+   Dbg_Warn("Log Warn %d %s", 200, "String");
+   Dbg_Fault("Log Fault %d %s", 200, "String");
 }

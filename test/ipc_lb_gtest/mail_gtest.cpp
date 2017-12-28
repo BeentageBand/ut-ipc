@@ -1,130 +1,79 @@
-/*=====================================================================================*/
-/**
- * mail_gtest.cpp
- * author : puch
- * date : Oct 22 2015
- *
- * description : Any comments
- *
- */
-/*=====================================================================================*/
-#define CLASS_IMPLEMENTATION
-/*=====================================================================================*
- * Project Includes
- *=====================================================================================*/
 #include "gtest/gtest.h"
 #include "mail.h"
-/*=====================================================================================* 
- * Standard Includes
- *=====================================================================================*/
-
-/*=====================================================================================* 
- * Local X-Macros
- *=====================================================================================*/
-
-/*=====================================================================================* 
- * Local Define Macros
- *=====================================================================================*/
-
-/*=====================================================================================* 
- * Local Type Definitions
- *=====================================================================================*/
  
-/*=====================================================================================* 
- * Local Function Prototypes
- *=====================================================================================*/
-
-/*=====================================================================================* 
- * Local Object Definitions
- *=====================================================================================*/
-static Mail_T GMail;
-/*=====================================================================================* 
- * Exported Object Definitions
- *=====================================================================================*/
-
-/*=====================================================================================* 
- * Local Inline-Function Like Macros
- *=====================================================================================*/
-
-/*=====================================================================================* 
- * Local Function Definitions
- *=====================================================================================*/
-
-/*=====================================================================================* 
- * Exported Function Definitions
- *=====================================================================================*/
+static union Mail GMail;
+ 
 TEST(Mail, Ctor)
 {
-   GMail = Mail();
    int a = 3;
-   GMail.vtbl->ctor(&GMail, IPC_GTEST_EV_MID, IPC_GTEST_1_WORKER, GTEST_FWK_WORKER, &a, sizeof(a));
+   Populate_Mail(&GMail, IPC_GTEST_EV_MID, IPC_GTEST_1_WORKER, GTEST_FWK_WORKER, &a, sizeof(a));
 
-   EXPECT_EQ(IPC_GTEST_EV_MID, GMail.mail_id);
-   EXPECT_EQ(IPC_GTEST_1_WORKER, GMail.sender_task);
-   EXPECT_EQ(GTEST_FWK_WORKER, GMail.receiver_task);
+   EXPECT_EQ(IPC_GTEST_EV_MID, GMail.mid);
+   EXPECT_EQ(IPC_GTEST_1_WORKER, GMail.sender);
+   EXPECT_EQ(GTEST_FWK_WORKER, GMail.receiver);
    EXPECT_FALSE(GMail.is_dumpable);
-   EXPECT_EQ(sizeof(a), GMail.data_size);
+   EXPECT_EQ(sizeof(a), GMail.pay_size);
 
-   ASSERT_FALSE(NULL == GMail.data);
-   EXPECT_EQ(a, (*(int *)GMail.data));
+   ASSERT_FALSE(NULL == GMail.payload);
+   EXPECT_EQ(a, (*(int *)GMail.payload));
 
 
 }
 
-TEST(Mail, Set_Data)
+TEST(Mail, Set_payload)
 {
    char str[] = "Helloworld!";
-   GMail.vtbl->set_data(&GMail, str, sizeof(str));
+   GMail.vtbl->set_payload(&GMail, str, sizeof(str));
 
-   EXPECT_EQ(IPC_GTEST_EV_MID, GMail.mail_id);
-   EXPECT_EQ(IPC_GTEST_1_WORKER, GMail.sender_task);
-   EXPECT_EQ(GTEST_FWK_WORKER, GMail.receiver_task);
+   EXPECT_EQ(IPC_GTEST_EV_MID, GMail.mid);
+   EXPECT_EQ(IPC_GTEST_1_WORKER, GMail.sender);
+   EXPECT_EQ(GTEST_FWK_WORKER, GMail.receiver);
    EXPECT_FALSE(GMail.is_dumpable);
-   EXPECT_EQ(sizeof(str), GMail.data_size);
+   EXPECT_EQ(sizeof(str), GMail.pay_size);
 
-   ASSERT_FALSE(NULL == GMail.data);
-   EXPECT_STRCASEEQ(str, ((char const *)GMail.data));
+   ASSERT_FALSE(NULL == GMail.payload);
+   EXPECT_STRCASEEQ(str, ((char const *)GMail.payload));
 
-   GMail.vtbl->set_mail_id(&GMail, IPC_GTEST_SUBS_MID);
+   GMail.vtbl->set_mid(&GMail, IPC_GTEST_SUBS_MID);
 
-   EXPECT_EQ(IPC_GTEST_SUBS_MID, GMail.mail_id);
-   EXPECT_EQ(IPC_GTEST_1_WORKER, GMail.sender_task);
-   EXPECT_EQ(GTEST_FWK_WORKER, GMail.receiver_task);
+   EXPECT_EQ(IPC_GTEST_SUBS_MID, GMail.mid);
+   EXPECT_EQ(IPC_GTEST_1_WORKER, GMail.sender);
+   EXPECT_EQ(GTEST_FWK_WORKER, GMail.receiver);
    EXPECT_FALSE(GMail.is_dumpable);
-   EXPECT_EQ(sizeof(str), GMail.data_size);
+   EXPECT_EQ(sizeof(str), GMail.pay_size);
 
-   ASSERT_FALSE(NULL == GMail.data);
-   EXPECT_STRCASEEQ(str, ((char const *)GMail.data));
+   ASSERT_FALSE(NULL == GMail.payload);
+   EXPECT_STRCASEEQ(str, ((char const *)GMail.payload));
 
-   GMail.vtbl->set_sender_task(&GMail, IPC_GTEST_2_WORKER);
+   GMail.vtbl->set_sender(&GMail, IPC_GTEST_2_WORKER);
 
-   EXPECT_EQ(IPC_GTEST_SUBS_MID, GMail.mail_id);
-   EXPECT_EQ(IPC_GTEST_2_WORKER, GMail.sender_task);
-   EXPECT_EQ(GTEST_FWK_WORKER, GMail.receiver_task);
+   EXPECT_EQ(IPC_GTEST_SUBS_MID, GMail.mid);
+   EXPECT_EQ(IPC_GTEST_2_WORKER, GMail.sender);
+   EXPECT_EQ(GTEST_FWK_WORKER, GMail.receiver);
    EXPECT_FALSE(GMail.is_dumpable);
-   EXPECT_EQ(sizeof(str), GMail.data_size);
+   EXPECT_EQ(sizeof(str), GMail.pay_size);
 
-   ASSERT_FALSE(NULL == GMail.data);
-   EXPECT_STRCASEEQ(str, ((char const *)GMail.data));
+   ASSERT_FALSE(NULL == GMail.payload);
+   EXPECT_STRCASEEQ(str, ((char const *)GMail.payload));
 
-   GMail.vtbl->set_receiver_task(&GMail, IPC_GTEST_1_WORKER);
+   GMail.vtbl->set_receiver(&GMail, IPC_GTEST_1_WORKER);
 
-   EXPECT_EQ(IPC_GTEST_SUBS_MID, GMail.mail_id);
-   EXPECT_EQ(IPC_GTEST_2_WORKER, GMail.sender_task);
-   EXPECT_EQ(IPC_GTEST_1_WORKER, GMail.receiver_task);
+   EXPECT_EQ(IPC_GTEST_SUBS_MID, GMail.mid);
+   EXPECT_EQ(IPC_GTEST_2_WORKER, GMail.sender);
+   EXPECT_EQ(IPC_GTEST_1_WORKER, GMail.receiver);
    EXPECT_FALSE(GMail.is_dumpable);
-   EXPECT_EQ(sizeof(str), GMail.data_size);
+   EXPECT_EQ(sizeof(str), GMail.pay_size);
 
-   ASSERT_FALSE(NULL == GMail.data);
-   EXPECT_STRCASEEQ(str, ((char const *)GMail.data));
+   ASSERT_FALSE(NULL == GMail.payload);
+   EXPECT_STRCASEEQ(str, ((char const *)GMail.payload));
 }
 
 TEST(Mail, Destroy)
 {
    GMail.object_vtbl->destroy(&GMail.object);
 
-   EXPECT_TRUE(NULL == GMail.data);
-   EXPECT_EQ(0UL, GMail.data_size);
+   EXPECT_TRUE(NULL == GMail.payload);
+   EXPECT_EQ(0UL, GMail.pay_size);
 }
 /*=====================================================================================* 
  * mail_gtest.cpp

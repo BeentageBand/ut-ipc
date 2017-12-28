@@ -3,7 +3,7 @@
  
 #include "gtest/gtest.h"
 #include "dbg_log.h"
-#include "gtest_task_ext.h"
+#include "gtest_worker_ext.h"
 #include "ipc.h"
 #include "ipc_helper.h"
 #include "ipc_gtest_worker.h"
@@ -30,11 +30,11 @@ TEST(Init, tasks)
 	Populate_IPC_Gtest_Worker(&w1, IPC_GTEST_1_WORKER_TID, w1_mailbox, Num_Elems(w1_mailbox));
 	Populate_IPC_Gtest_Worker(&w2, IPC_GTEST_2_WORKER_TID, w2_mailbox, Num_Elems(w2_mailbox));
 
-	Task_Register_To_Process(NULL);
+	//Task_Register_To_Process(NULL);
 	Populate_Mailbox(&mbx, GTEST_FWK_WORKER_TID, gtest_mailbox, Num_Elems(gtest_mailbox));
 
 	IPC_Register_Mailbox(&mbx);
-	IPC_Task_Ready();
+	IPC_Ready();
 
 	IPC_Run(IPC_GTEST_1_WORKER_TID);
 	IPC_Run(IPC_GTEST_2_WORKER_TID);
@@ -110,9 +110,9 @@ TEST(Shutdown, mail)
 //   IPC_Wait(IPC_GTEST_2_WORKER);
 }
 
-int Gtest_Task_Cbk(int argc, char ** argv)
+int Gtest_Worker_Cbk(int argc, char ** argv)
 {
-   std::cout << "Gtest_Task_Cbk main()\n";
+   std::cout << "Gtest_Worker_Cbk main()\n";
    testing::InitGoogleTest(&argc, argv);
    return RUN_ALL_TESTS();
 }

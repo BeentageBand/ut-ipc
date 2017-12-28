@@ -1,36 +1,30 @@
 #ifndef GTEST_TASK_H_
 #define GTEST_TASK_H_
  
-#include "thread.h"
- 
-#define Gtest_Task_INHERITS Task
-#define Gtest_Task_MEMBERS(_member, _class) \
-_member(int _private, argc) \
-_member(char ** _private, argv) \
-
-#define Gtest_Task_METHODS(_method, _class)
+#include "worker.h"
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-typedef union Thread Gtest_Thread_Class_T;
-typedef union Gtest_Thread
+typedef union Worker Gtest_Worker_Class_T;
+
+typedef union Gtest_Worker
 {
-	Gtest_Thread_Class_T _private * _private vtbl;
+	Gtest_Worker_Class_T _private * _private vtbl;
 	struct Object Object;
 	struct
 	{
-		union Thread Thread;
+		union Worker Worker;
 		int _private args;
 		char _private ** _private argv;
 	};
-}Gtest_Thread_T;
+}Gtest_Worker_T;
 	
  
-extern Gtest_Thread_Class_T _private Gtest_Thread_Class;
+extern Gtest_Worker_Class_T _private Gtest_Worker_Class;
 
-extern Populate_Gtest_Task(union Gtest_Thread * const gtest_thread, IPC_Task_Id_T const, int argc, char ** argv);
+extern Populate_Gtest_Task(union Gtest_Worker * const gtest_thread, IPC_TID_T const, int argc, char ** argv);
 
 #ifdef __cplusplus
 }

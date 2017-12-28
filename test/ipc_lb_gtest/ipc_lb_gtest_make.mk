@@ -12,7 +12,7 @@ publisher_gtest \
 $(_flavor_)_$(_feat_)_bin_libs=\
 cobject \
 dbg_log \
-gtest_task \
+gtest_worker \
 gtest \
 ipc \
 ipc_gtest_worker \
