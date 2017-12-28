@@ -1,5 +1,5 @@
 #undef Dbg_FID
-#define Dbg_FID Dbg_FID_Def(GTEST_FID,1)
+#define Dbg_FID DBG_FID_DEF(GTEST_FID,1)
  
 #include "gtest/gtest.h"
 #include "dbg_log.h"
@@ -24,19 +24,23 @@ static union Mail w2_mailbox[64] = {0};
 
 TEST(Init, tasks)
 {
+	static union Mail gtest_mailbox [64] = {0};
+	static union Mailbox mbx = {NULL};
 
-   Populate_IPC_Gtest_Worker(&w1, IPC_GTEST_1_WORKER_TID, w1_mailbox, Num_Elems(w1_mailbox));
-   Populate_IPC_Gtest_Worker(&w2, IPC_GTEST_2_WORKER_TID, w2_mailbox, Num_Elems(w2_mailbox));
+	Populate_IPC_Gtest_Worker(&w1, IPC_GTEST_1_WORKER_TID, w1_mailbox, Num_Elems(w1_mailbox));
+	Populate_IPC_Gtest_Worker(&w2, IPC_GTEST_2_WORKER_TID, w2_mailbox, Num_Elems(w2_mailbox));
 
-   Task_Register_To_Process(NULL);
-   IPC_Create_Mailbox(64, 256);
-   IPC_Task_Ready();
+	Task_Register_To_Process(NULL);
+	Populate_Mailbox(&mbx, GTEST_FWK_WORKER_TID, gtest_mailbox, Num_Elems(gtest_mailbox));
 
-   IPC_Run(IPC_GTEST_1_WORKER_TID);
-   IPC_Run(IPC_GTEST_2_WORKER_TID);
+	IPC_Register_Mailbox(&mbx);
+	IPC_Task_Ready();
 
-   sleep(1);
-   ASSERT_EQ(GTEST_FWK_WORKER_TID, IPC_Self());
+	IPC_Run(IPC_GTEST_1_WORKER_TID);
+	IPC_Run(IPC_GTEST_2_WORKER_TID);
+
+	sleep(1);
+	ASSERT_EQ(GTEST_FWK_WORKER_TID, IPC_Self());
 }
 
 TEST(Timestamp, functions)

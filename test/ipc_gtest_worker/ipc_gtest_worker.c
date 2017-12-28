@@ -1,6 +1,6 @@
-#define CLASS_IMPLEMENTATION
+#define COBJECT_IMPLEMENTATION
 #undef Dbg_FID
-#define Dbg_FID Dbg_FID_Def(IPC_FID,0)
+#define Dbg_FID DBG_FID_DEF(IPC_FID,0)
  
 #include "dbg_log.h"
 #include "ipc.h"
