@@ -4,8 +4,8 @@
  
 #include "dbg_log.h"
 #include "ipc.h"
-#include "gtest_task_ext.h"
-#include "gtest_task.h"
+#include "gtest_worker_ext.h"
+#include "gtest_worker.h"
  
 #include <unistd.h>
  
@@ -42,25 +42,24 @@ void gtest_thread_on_start(union Worker * const super)
 
 int main(int argc, char ** argv)
 {
-	Gtest_Thread_T gtest;
-	Populate_Gtest_Worker(&gtest, GTEST_FWK_WORKER, argc, argv);
+	Gtest_Worker_T gtest;
+	Populate_Gtest_Worker(&gtest, GTEST_FWK_WORKER_TID, argc, argv);
 
-	IPC_Run(GTEST_FWK_WORKER);
-	IPC_Wait(GTEST_FWK_WORKER);
+	IPC_Run(GTEST_FWK_WORKER_TID);
+	IPC_Wait(GTEST_FWK_WORKER_TID, 15000);
 }
  
-Populate_Gtest_Worker(union Gtest_Worker * const this, IPC_Task_Id_T const tid, int argc, char ** argv)
+Populate_Gtest_Worker(union Gtest_Worker * const this, IPC_TID_T const tid, int argc, char ** argv)
 {
 	if(NULL == Gtest_Thread.vtbl)
 	{
 		Populate_Worker(&Gtest_Worker.Worker, tid, Gtest_Mailbox, Num_Elems(Gtest_Mailbox));
-		Object_Init(&Gtest_Thread.Object, &Gtest_Thread_Class.Class, sizeof(Gtest_Thread_Class.Thread));
-		Gtest_Thread_Class.runnable = gtest_thread_runnable;
+		Object_Init(&Gtest_Worker.Object, &Gtest_Worker_Class.Class, sizeof(Gtest_Worker_Class.Thread));
 	}
 
 	memcpy(this, &Gtest_Thread, sizeof(Gtest_Thread));
-	this.argc = argc;
-	this.argv = argv;
+	this->argc = argc;
+	this->argv = argv;
 
 	return this;
 }

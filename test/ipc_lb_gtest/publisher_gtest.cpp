@@ -1,95 +1,44 @@
-/*=====================================================================================*/
-/**
- * publisher_gtest.cpp
- * author : puch
- * date : Oct 22 2015
- *
- * description : Any comments
- *
- */
-/*=====================================================================================*/
 #define CLASS_IMPLEMENTATION
-/*=====================================================================================*
- * Project Includes
- *=====================================================================================*/
+ 
 #include "gtest/gtest.h"
 #include "publisher.h"
 #include "mailbox.h"
-/*=====================================================================================* 
- * Standard Includes
- *=====================================================================================*/
 
-/*=====================================================================================* 
- * Local X-Macros
- *=====================================================================================*/
-
-/*=====================================================================================* 
- * Local Define Macros
- *=====================================================================================*/
-
-/*=====================================================================================* 
- * Local Type Definitions
- *=====================================================================================*/
+static union Mailbox Subscribable_Mbx = {NULL};
+static union Mail Subs_Mbx_Buff[23] = {0};
  
-/*=====================================================================================* 
- * Local Function Prototypes
- *=====================================================================================*/
-
-/*=====================================================================================* 
- * Local Object Definitions
- *=====================================================================================*/
-static Mailbox_T Subscribable_Mbx;
-/*=====================================================================================* 
- * Exported Object Definitions
- *=====================================================================================*/
-
-/*=====================================================================================* 
- * Local Inline-Function Like Macros
- *=====================================================================================*/
-
-/*=====================================================================================* 
- * Local Function Definitions
- *=====================================================================================*/
-
-/*=====================================================================================* 
- * Exported Function Definitions
- *=====================================================================================*/
 TEST(Publisher, Subscribe)
 {
-   IPC_Mail_Id_T mid = IPC_GTEST_SUBS_MID;
-   Subscribable_Mbx = Mailbox();
+   IPC_MID_T mid = IPC_GTEST_PBC_MID;
 
-   Subscribable_Mbx.vtbl->ctor(&Subscribable_Mbx, GTEST_FWK_WORKER, 23, 40);
+   Populate_Mailbox(&Subscribable_Mbx, GTEST_FWK_WORKER_TID, Subs_Mbx_Buff, Num_Elems(Subs_Mbx_Buff));
 
-   ASSERT_TRUE( Publisher_subscribe(&Subscribable_Mbx, mid) );
+   ASSERT_TRUE( Publisher_Subscribe(&Subscribable_Mbx, mid) );
 }
 
 TEST(Publisher, Publish)
 {
-   Mail_T mail = Mail();
-   mail.vtbl->ctor(&mail,0, 0, IPC_GTEST_SUBS_MID, NULL, 0);
-   Publisher_publish_mail(&mail);
+	union Mail published_mail = {NULL};
 
-   Mail_T const * retrieved_mail = Subscribable_Mbx.vtbl->pop_mail(&Subscribable_Mbx, 2000U);
-   ASSERT_FALSE(NULL == retrieved_mail);
-   EXPECT_EQ(IPC_GTEST_SUBS_MID, retrieved_mail->mail_id );
+	Populate_Mail(&published_mail, IPC_GTEST_PBC_MID, GTEST_FWK_WORKER_TID, (IPC_TID_T const)0, NULL, 0);
+	Publisher_Publish(&published_mail);
 
-   mail.vtbl->set_mail_id(&mail, IPC_GTEST_EV_MID);
-   Publisher_publish_mail(&mail);
-   retrieved_mail = Subscribable_Mbx.vtbl->pop_mail(&Subscribable_Mbx, 2000U);
-   ASSERT_TRUE(NULL == retrieved_mail);
+	_delete(&published_mail);
+
+	union Mail retrieved_mail = {NULL};
+	Subscribable_Mbx.vtbl->retrieve(&Subscribable_Mbx, &retrieved_mail);
+	EXPECT_EQ(IPC_GTEST_PBC_MID, retrieved_mail.mid );
+
+	Populate_Mail(&published_mail, IPC_GTEST_INT_MID, GTEST_FWK_WORKER_TID, (IPC_TID_T const)0, NULL, 0);
+	Publisher_Publish(&published_mail);
+	Subscribable_Mbx.vtbl->retrieve(&Subscribable_Mbx, &retrieved_mail);
+
+	_delete(&published_mail);
 }
 
 TEST(Publisher, Unsubscribe)
 {
-   IPC_Mail_Id_T mid = IPC_GTEST_SUBS_MID;
-   ASSERT_TRUE( Publisher_unsubscribe(&Subscribable_Mbx, mid ) );
+   IPC_MID_T mid = IPC_GTEST_PBC_MID;
+   ASSERT_TRUE( Publisher_Unsubscribe(&Subscribable_Mbx, mid) );
    _delete(&Subscribable_Mbx);
 }
-
-/*=====================================================================================* 
- * publisher_gtest.cpp
- *=====================================================================================*
- * Log History
- *
- *=====================================================================================*/

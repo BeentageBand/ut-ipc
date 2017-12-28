@@ -12,6 +12,7 @@ typedef union Worker Gtest_Worker_Class_T;
 typedef union Gtest_Worker
 {
 	Gtest_Worker_Class_T _private * _private vtbl;
+	union Thread Thread;
 	struct Object Object;
 	struct
 	{

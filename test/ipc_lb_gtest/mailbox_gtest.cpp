@@ -1,115 +1,62 @@
-/*=====================================================================================*/
-/**
- * mailbox_gtest.cpp
- * author : puch
- * date : Oct 22 2015
- *
- * description : Any comments
- *
- */
-/*=====================================================================================*/
 #define CLASS_IMPLEMENTATION
-/*=====================================================================================*
- * Project Includes
- *=====================================================================================*/
+ 
 #include "gtest/gtest.h"
 #include "mailbox.h"
-/*=====================================================================================* 
- * Standard Includes
- *=====================================================================================*/
-
-/*=====================================================================================* 
- * Local X-Macros
- *=====================================================================================*/
-
-/*=====================================================================================* 
- * Local Define Macros
- *=====================================================================================*/
-
-/*=====================================================================================* 
- * Local Type Definitions
- *=====================================================================================*/
-struct MailData
+ 
+struct Mailpayload
 {
-   IPC_Mail_Id_T mid;
-   IPC_Task_Id_T tid;
+   IPC_MID_T mid;
+   IPC_TID_T tid;
 };
 
-class Mailbox_Test_Obj : public ::testing::TestWithParam<struct MailData>
+class Mailbox_Test_Obj : public ::testing::TestWithParam<struct Mailpayload>
 {};
-/*=====================================================================================* 
- * Local Function Prototypes
- *=====================================================================================*/
+ 
+static union Mailbox GMailbox = {NULL};
+static union Mail GMailbox_Buff[64] = {0};
 
-/*=====================================================================================* 
- * Local Object Definitions
- *=====================================================================================*/
-static Mailbox_T GMailbox;
-
-static struct MailData MailData [] =
+static struct Mailpayload MailData [] =
 {
-   {IPC_GTEST_SUBS_MID, IPC_GTEST_1_WORKER},
-   {IPC_GTEST_SUBS_MID, IPC_GTEST_2_WORKER},
-   {IPC_GTEST_SUBS_MID, GTEST_FWK_WORKER},
-   {IPC_GTEST_EV_MID, IPC_GTEST_1_WORKER},
-   {IPC_GTEST_EV_MID, IPC_GTEST_2_WORKER},
-   {IPC_GTEST_EV_MID, GTEST_FWK_WORKER},
-   {WORKER_SHUTDOWN_MID, IPC_GTEST_1_WORKER},
-   {WORKER_SHUTDOWN_MID, IPC_GTEST_2_WORKER},
-   {WORKER_SHUTDOWN_MID, GTEST_FWK_WORKER},
+   {IPC_GTEST_PBC_MID, IPC_GTEST_1_WORKER_TID},
+   {IPC_GTEST_PBC_MID, IPC_GTEST_2_WORKER_TID},
+   {IPC_GTEST_PBC_MID, GTEST_FWK_WORKER_TID},
+   {IPC_GTEST_INT_MID, IPC_GTEST_1_WORKER_TID},
+   {IPC_GTEST_INT_MID, IPC_GTEST_2_WORKER_TID},
+   {IPC_GTEST_INT_MID, GTEST_FWK_WORKER_TID},
+   {WORKER_INT_SHUTDOWN_MID, IPC_GTEST_1_WORKER_TID},
+   {WORKER_INT_SHUTDOWN_MID, IPC_GTEST_2_WORKER_TID},
+   {WORKER_INT_SHUTDOWN_MID, GTEST_FWK_WORKER_TID},
 };
-/*=====================================================================================* 
- * Exported Object Definitions
- *=====================================================================================*/
-
-/*=====================================================================================* 
- * Local Inline-Function Like Macros
- *=====================================================================================*/
-
-/*=====================================================================================* 
- * Local Function Definitions
- *=====================================================================================*/
-
-/*=====================================================================================* 
- * Exported Function Definitions
- *=====================================================================================*/
-TEST(Mailbox, Ctor)
+ 
+TEST(Mailbox, Populate)
 {
-   GMailbox = Mailbox();
-   GMailbox.vtbl->ctor(&GMailbox, GTEST_FWK_WORKER, 64, 64);
+   Populate_Mailbox(&GMailbox, GTEST_FWK_WORKER_TID, GMailbox_Buff, Num_Elems(GMailbox_Buff));
 
-   EXPECT_EQ(GTEST_FWK_WORKER, GMailbox.owner);
-   EXPECT_EQ(64UL, GMailbox.data_size);
+   EXPECT_EQ(GTEST_FWK_WORKER_TID, GMailbox.tid);
+   EXPECT_EQ(64UL, GMailbox.mailbox.capacity);
 }
 
 TEST_P(Mailbox_Test_Obj, Push_Mail)
 {
-   Mail_T mail = Mail();
-   struct MailData const & test_mail = GetParam();
+	union Mail mail = {NULL};
+	struct Mailpayload const & test_mail = GetParam();
 
-   mail.vtbl->ctor(&mail, test_mail.mid, test_mail.tid, GTEST_FWK_WORKER, NULL, 0);
+	Populate_Mail(&mail, test_mail.mid, test_mail.tid, GTEST_FWK_WORKER_TID, NULL, 0);
 
-   GMailbox.vtbl->push_mail(&GMailbox, &mail);
+	GMailbox.vtbl->push_mail(&GMailbox, &mail);
 
-   Mail_T const * actual_mail = GMailbox.vtbl->pop_mail(&GMailbox, 500);
+	union Mail actual_mail = {NULL};
+	GMailbox.vtbl->retrieve(&GMailbox, &actual_mail);
 
-   ASSERT_FALSE(NULL == actual_mail);
-   EXPECT_EQ(mail.mail_id, actual_mail->mail_id);
+	EXPECT_EQ(mail.mid, actual_mail.mid);
 
-   mail.object_vtbl->destroy(&mail.object);
+	_delete(&mail);
 }
 
 INSTANTIATE_TEST_CASE_P(Mailist, Mailbox_Test_Obj, ::testing::ValuesIn(MailData));
 
-TEST(Mailbox, dump)
+TEST(Mailbox, Delete)
 {
-   GMailbox.vtbl->dump(&GMailbox);
-   EXPECT_EQ(0U, GMailbox.mailbox.size);
-   EXPECT_TRUE(GMailbox.mailbox.vtbl->empty(&GMailbox.mailbox));
+	_delete(&GMailbox);
+   EXPECT_EQ(0U, GMailbox.mailbox.i);
 }
-/*=====================================================================================* 
- * mailbox_gtest.cpp
- *=====================================================================================*
- * Log History
- *
- *=====================================================================================*/
