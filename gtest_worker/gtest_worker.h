@@ -7,7 +7,7 @@
 extern "C" {
 #endif
 
-typedef union Worker Gtest_Worker_Class_T;
+typedef union Worker_Class Gtest_Worker_Class_T;
 
 typedef union Gtest_Worker
 {
@@ -17,7 +17,7 @@ typedef union Gtest_Worker
 	struct
 	{
 		union Worker Worker;
-		int _private args;
+		int _private argc;
 		char _private ** _private argv;
 	};
 }Gtest_Worker_T;
@@ -25,7 +25,7 @@ typedef union Gtest_Worker
  
 extern Gtest_Worker_Class_T _private Gtest_Worker_Class;
 
-extern Populate_Gtest_Task(union Gtest_Worker * const gtest_thread, IPC_TID_T const, int argc, char ** argv);
+extern Populate_Gtest_Worker(union Gtest_Worker * const gtest_thread, IPC_TID_T const tid, int argc, char ** argv);
 
 #ifdef __cplusplus
 }

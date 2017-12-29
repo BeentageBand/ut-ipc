@@ -9,13 +9,13 @@
  
 #include <unistd.h>
  
-static void gtest_thread_delete(struct Object * const obj);
+static void gtest_worker_delete(struct Object * const obj);
 static void gtest_worker_on_start(union Worker * const super);
 static void gtest_worker_on_mail(union Worker * const super, union Mail * const mail);
 static void gtest_worker_on_loop(union Worker * const super);
 static void gtest_worker_on_stop(union Worker * const super);
 
-Gtest_worker_Class_T Gtest_Worker_Class =
+Gtest_Worker_Class_T Gtest_Worker_Class =
 {
 	{gtest_worker_delete, NULL},
 	gtest_worker_on_start,
@@ -25,19 +25,31 @@ Gtest_worker_Class_T Gtest_Worker_Class =
 };
 
 static union Gtest_Worker Gtest_Worker = {NULL};
-static union Mail Gtest_Worker_Mailbox[64];
+static union Mail Gtest_Worker_Mailbox[64] = {0};
 
-void gtest_thread_delete(struct Object * const obj)
+void gtest_worker_delete(struct Object * const obj)
 {}
 
 void gtest_thread_on_start(union Worker * const super)
 {
-   Dbg_Info("Gtest_Thread_run");
-   Gtest_Thread_T * const this = _cast(Gtest_Thread, super);
+   Dbg_Info("Gtest_Worker_run");
+   Gtest_Worker_T * const this = _cast(Gtest_Worker, super);
 
-   IPC_Thread_Ready();
+   IPC_Ready();
 
-   Gtest_Thread_Cbk(this->argc, this->argv);
+   Gtest_Worker_Cbk(this->argc, this->argv);
+}
+
+static void gtest_worker_on_mail(union Worker * const super, union Mail * const mail)
+{
+}
+void gtest_worker_on_loop(union Worker * const super)
+{
+	IPC_Sleep(500);
+}
+
+void gtest_worker_on_stop(union Worker * const super)
+{
 }
 
 int main(int argc, char ** argv)
@@ -51,16 +63,15 @@ int main(int argc, char ** argv)
  
 Populate_Gtest_Worker(union Gtest_Worker * const this, IPC_TID_T const tid, int argc, char ** argv)
 {
-	if(NULL == Gtest_Thread.vtbl)
+	if(NULL == Gtest_Worker.vtbl)
 	{
-		Populate_Worker(&Gtest_Worker.Worker, tid, Gtest_Mailbox, Num_Elems(Gtest_Mailbox));
+		Populate_Worker(&Gtest_Worker.Worker, tid, Gtest_Worker_Mailbox, Num_Elems(Gtest_Worker_Mailbox));
 		Object_Init(&Gtest_Worker.Object, &Gtest_Worker_Class.Class, sizeof(Gtest_Worker_Class.Thread));
 	}
 
-	memcpy(this, &Gtest_Thread, sizeof(Gtest_Thread));
+	memcpy(this, &Gtest_Worker, sizeof(Gtest_Worker));
 	this->argc = argc;
 	this->argv = argv;
 
 	return this;
 }
-
