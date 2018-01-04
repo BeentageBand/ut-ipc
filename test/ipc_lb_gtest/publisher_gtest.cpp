@@ -18,22 +18,14 @@ TEST(Publisher, Subscribe)
 
 TEST(Publisher, Publish)
 {
-	union Mail published_mail = {NULL};
-
-	Populate_Mail(&published_mail, IPC_GTEST_PBC_MID, GTEST_FWK_WORKER_TID, (IPC_TID_T const)0, NULL, 0);
-	Publisher_Publish(&published_mail);
-
-	_delete(&published_mail);
+	Publisher_Publish(IPC_GTEST_PBC_MID, NULL, 0);
 
 	union Mail retrieved_mail = {NULL};
 	Subscribable_Mbx.vtbl->retrieve(&Subscribable_Mbx, &retrieved_mail);
 	EXPECT_EQ(IPC_GTEST_PBC_MID, retrieved_mail.mid );
 
-	Populate_Mail(&published_mail, IPC_GTEST_INT_MID, GTEST_FWK_WORKER_TID, (IPC_TID_T const)0, NULL, 0);
-	Publisher_Publish(&published_mail);
+	Publisher_Publish(IPC_GTEST_INT_MID, NULL, 0);
 	Subscribable_Mbx.vtbl->retrieve(&Subscribable_Mbx, &retrieved_mail);
-
-	_delete(&published_mail);
 }
 
 TEST(Publisher, Unsubscribe)
