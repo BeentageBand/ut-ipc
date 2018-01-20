@@ -13,45 +13,15 @@
 #include <iostream>
 #include <unistd.h>
  
-static void ipc_lb_delete(struct Object * const obj);
-
 static IPC_MID_T const Gtest_Mailist[] =
 {
       IPC_GTEST_PBC_MID
 };
 
-static IPC_Helper_Class_T IPC_Helper_Class = {ipc_lb_delete, NULL};
 static IPC_Gtest_Worker_T w1 = {NULL};
 static IPC_Gtest_Worker_T w2 = {NULL};
 static union Mail w1_mailbox[64] = {0};
 static union Mail w2_mailbox[64] = {0};
-
-union IPC_Helper * IPC_get_instance(void)
-{
-	static union IPC_Helper ipch = {NULL};
-	static Thread_Ptr_T thread_set[IPC_TID_MAX] = {0};
-	static Mailbox_Ptr_T mailbox_set[IPC_TID_MAX] = {0};
-
-	if(NULL == ipch.vtbl)
-	{
-		ipch.vtbl = &IPC_Helper_Class;
-		Populate_Uptime(&ipch.uptime);
-		Populate_CSet_Thread_Ptr(&ipch.rthreads, thread_set, Num_Elems(thread_set));
-		Populate_CSet_Mailbox_Ptr(&ipch.rmailboxes, mailbox_set, Num_Elems(mailbox_set)); 
-	}
-
-	return &ipch;
-}
-
-void ipc_lb_delete(struct Object * const obj)
-{
-	IPC_Helper * const ipch = (IPC_Helper_T *) Object_Cast(&IPC_Helper_Class.Class, obj);
-	Isnt_Nullptr(ipch,);
-
-	_delete(&ipch.rthreads);
-	_delete(&ipch.rmailboxes);
-	_delete(&ipch.uptime);
-}
 
 TEST(Init, tasks)
 {
