@@ -2,10 +2,10 @@ define $(_flavor_)_$(_feat_)_MAKE
 $(_flavor_)_$(_feat_)_inc=
 
 $(_flavor_)_$(_feat_)_bin_objs=\
+ipc_lb_gtest \
+#mail_gtest \
 dbg_log_gtest \
 ipc_gtest \
-ipc_lb_gtest \
-mail_gtest \
 mailbox_gtest \
 publisher_gtest \
 
