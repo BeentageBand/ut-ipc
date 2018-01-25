@@ -1,6 +1,7 @@
 #define CLASS_IMPLEMENTATION
  
 #include "gtest/gtest.h"
+#include "ipc.h"
 #include "publisher.h"
 #include "mailbox.h"
 
@@ -13,7 +14,9 @@ TEST(Publisher, Subscribe)
 
    Populate_Mailbox(&Subscribable_Mbx, GTEST_FWK_WORKER_TID, Subs_Mbx_Buff, Num_Elems(Subs_Mbx_Buff));
 
-   ASSERT_TRUE( Publisher_Subscribe(&Subscribable_Mbx, mid) );
+   IPC_Register_Mailbox(&Subscribable_Mbx);
+
+   ASSERT_TRUE( Publisher_Subscribe(GTEST_FWK_WORKER_TID, mid) );
 }
 
 TEST(Publisher, Publish)
@@ -31,6 +34,8 @@ TEST(Publisher, Publish)
 TEST(Publisher, Unsubscribe)
 {
    IPC_MID_T mid = IPC_GTEST_PBC_MID;
-   ASSERT_TRUE( Publisher_Unsubscribe(&Subscribable_Mbx, mid) );
+
+   IPC_Unregister_Mailbox(&Subscribable_Mbx);
+   ASSERT_TRUE( Publisher_Unsubscribe(GTEST_FWK_WORKER_TID, mid) );
    _delete(&Subscribable_Mbx);
 }
