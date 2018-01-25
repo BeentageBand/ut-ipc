@@ -33,16 +33,16 @@ void Populate_IPC_Gtest_Worker(IPC_Gtest_Worker_T * const this, IPC_TID_T const 
 	if(NULL == IPC_Gtest_Worker.vtbl)
 	{
 		Populate_Worker(&IPC_Gtest_Worker, tid, mail_buff, mail_size);
-		Object_Init(&IPC_Gtest_Worker.Object, IPC_Gtest_Worker_Class.Class, sizeof(IPC_Gtest_Worker_Class));
+		Object_Init(&IPC_Gtest_Worker.Object, &IPC_Gtest_Worker_Class.Class, sizeof(IPC_Gtest_Worker_Class));
 	}
 	memcpy(this, &IPC_Gtest_Worker, sizeof(IPC_Gtest_Worker));
 }
 
 void ipc_gtest_worker_on_start(Worker_T * const super)
 {
-   IPC_Gtest_Worker_T * const this = _dynamic_cast(IPC_Gtest_Worker, super);
+   IPC_Gtest_Worker_T * const this = _cast(IPC_Gtest_Worker, super);
    Isnt_Nullptr(this, );
-   Dbg_Info("IPC_Gtest_Worker_on_start %d", this->Worker.Task.tid);
+   Dbg_Info("IPC_Gtest_Worker_on_start %d", this->Task.tid);
 }
 
 void ipc_gtest_worker_on_loop(Worker_T * const super, union Mail * const mail)
@@ -51,9 +51,9 @@ void ipc_gtest_worker_on_loop(Worker_T * const super, union Mail * const mail)
 
 	switch(mail->mid)
 	{
-	case IPC_GTEST_EV_MID:
+	case IPC_GTEST_INT_MID:
 	   Dbg_Info("Gtest Worker  Handles mid IPC_GTEST_EV_MID");
-	   IPC_Send(GTEST_FWK_WORKER, IPC_GTEST_EV_MID, NULL, 0);
+	   IPC_Send(GTEST_FWK_WORKER_TID, IPC_GTEST_INT_MID, NULL, 0);
 	   break;
 	default: break;
 	}
@@ -68,5 +68,5 @@ void ipc_gtest_worker_on_stop(Worker_T * const super)
 {
    IPC_Gtest_Worker_T * const this = _cast(IPC_Gtest_Worker, super);
    Isnt_Nullptr(this, );
-   Dbg_Info("IPC_Gtest_Worker_on_stop %d", this->Worker.Task.tid);
+   Dbg_Info("IPC_Gtest_Worker_on_stop %d", this->Task.tid);
 }
