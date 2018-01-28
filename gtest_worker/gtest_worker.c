@@ -6,6 +6,7 @@
 #include "ipc.h"
 #include "gtest_worker_ext.h"
 #include "gtest_worker.h"
+#include "ipc_posix.h"
  
 #include <unistd.h>
  
@@ -55,23 +56,26 @@ void gtest_worker_on_stop(union Worker * const super)
 int main(int argc, char ** argv)
 {
 	Gtest_Worker_T gtest;
+
+	static IPC_POSIX_T posix_helper = {NULL};
+	Populate_IPC_POSIX(&posix_helper);
+	IPC_Helper_Append(&posix_helper);
+
 	Populate_Gtest_Worker(&gtest, GTEST_FWK_WORKER_TID, argc, argv);
 
 	IPC_Run(GTEST_FWK_WORKER_TID);
 	IPC_Wait(GTEST_FWK_WORKER_TID, 15000);
 }
  
-Populate_Gtest_Worker(union Gtest_Worker * const this, IPC_TID_T const tid, int argc, char ** argv)
+void Populate_Gtest_Worker(union Gtest_Worker * const this, IPC_TID_T const tid, int argc, char ** argv)
 {
 	if(NULL == Gtest_Worker.vtbl)
 	{
-		Populate_Worker(&Gtest_Worker.Worker, tid, Gtest_Worker_Mailbox, Num_Elems(Gtest_Worker_Mailbox));
+	    Populate_Worker(&Gtest_Worker.Worker, tid, Gtest_Worker_Mailbox, Num_Elems(Gtest_Worker_Mailbox));
 		Object_Init(&Gtest_Worker.Object, &Gtest_Worker_Class.Class, sizeof(Gtest_Worker_Class.Thread));
 	}
 
 	memcpy(this, &Gtest_Worker, sizeof(Gtest_Worker));
 	this->argc = argc;
 	this->argv = argv;
-
-	return this;
 }
