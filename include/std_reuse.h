@@ -45,7 +45,9 @@ typedef bool bool_t;
  * Exported Function Like Macros
  *=====================================================================================*/
 #define Num_Elems(array) (sizeof(array)/sizeof(array[0]))
-#define Isnt_Nullptr(obj, retval) if(NULL == obj) return retval
+#define Isnt_Nullptr(obj, retval) \
+    if(NULL == obj) \
+    {Dbg_Fault("%s:%s is a nullptr", __func__, #obj); return retval;}
 
 #ifdef __cplusplus
 }

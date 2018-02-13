@@ -17,13 +17,17 @@ static void gtest_worker_on_loop(union Worker * const super);
 static void gtest_worker_on_stop(union Worker * const super);
 
 Gtest_Worker_Class_T Gtest_Worker_Class =
-{
-	{gtest_worker_delete, NULL},
-	gtest_worker_on_start,
+{{
+	{
+	        {gtest_worker_delete, NULL},
+	        NULL,
+	        NULL
+	},
 	gtest_worker_on_mail,
+	gtest_worker_on_start,
 	gtest_worker_on_loop,
 	gtest_worker_on_stop
-};
+}};
 
 static union Gtest_Worker Gtest_Worker = {NULL};
 static union Mail Gtest_Worker_Mailbox[64] = {0};
@@ -31,7 +35,7 @@ static union Mail Gtest_Worker_Mailbox[64] = {0};
 void gtest_worker_delete(struct Object * const obj)
 {}
 
-void gtest_thread_on_start(union Worker * const super)
+void gtest_worker_on_start(union Worker * const super)
 {
    Dbg_Info("Gtest_Worker_run");
    Gtest_Worker_T * const this = _cast(Gtest_Worker, super);
@@ -68,6 +72,7 @@ int main(int argc, char ** argv)
 
 	IPC_Run(GTEST_FWK_WORKER_TID);
 	IPC_Wait(GTEST_FWK_WORKER_TID, 15000);
+	while(1){}
 }
  
 void Populate_Gtest_Worker(union Gtest_Worker * const this, IPC_TID_T const tid, int argc, char ** argv)

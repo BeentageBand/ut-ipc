@@ -15,13 +15,16 @@ static void ipc_gtest_worker_on_loop(Worker_T * const super);
 static void ipc_gtest_worker_on_stop(Worker_T * const super);
  
 IPC_Gtest_Worker_Class_T IPC_Gtest_Worker_Class =
-{
-	{ipc_gtest_worker_delete, NULL},
+{{
+	{
+	        {ipc_gtest_worker_delete, NULL},
+	        NULL
+	},
 	ipc_gtest_worker_on_mail,
 	ipc_gtest_worker_on_start,
 	ipc_gtest_worker_on_loop,
 	ipc_gtest_worker_on_stop
-};
+}};
 
 static IPC_Gtest_Worker_T IPC_Gtest_Worker = {NULL};
 
