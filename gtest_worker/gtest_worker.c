@@ -61,8 +61,6 @@ void gtest_worker_on_stop(union Worker * const super)
 
 int main(int argc, char ** argv)
 {
-	Gtest_Worker_T gtest;
-
 	printf("Init with %d args\n", argc);
 	static IPC_POSIX_T posix_helper = {NULL};
 	Populate_IPC_POSIX(&posix_helper);
@@ -70,7 +68,7 @@ int main(int argc, char ** argv)
 
 	union Thread thrd = {NULL};
 
-	Populate_Gtest_Worker(&gtest, GTEST_FWK_WORKER_TID, argc, argv);
+	Init_Gtest_Worker(argc, argv);
 	Populate_Thread(&thrd, IPC_GTEST_2_WORKER_TID);
 
 	IPC_Run(GTEST_FWK_WORKER_TID);
@@ -78,17 +76,14 @@ int main(int argc, char ** argv)
 	while(1){}
 }
  
-void Populate_Gtest_Worker(union Gtest_Worker * const this, IPC_TID_T const tid, int argc, char ** argv)
+void Init_Gtest_Worker(int argc, char ** argv)
 {
 	if(NULL == Gtest_Worker.vtbl)
 	{
-	    Populate_Worker(&Gtest_Worker.Worker, tid, Gtest_Worker_Mailbox, Num_Elems(Gtest_Worker_Mailbox));
+	    Populate_Worker(&Gtest_Worker.Worker, GTEST_FWK_WORKER_TID, Gtest_Worker_Mailbox, Num_Elems(Gtest_Worker_Mailbox));
 		Object_Init(&Gtest_Worker.Object, &Gtest_Worker_Class.Class, sizeof(Gtest_Worker_Class.Thread));
+		Gtest_Worker.argc = argc;
+		Gtest_Worker.argv = argv;
 	}
-
-	memcpy(this, &Gtest_Worker, sizeof(Gtest_Worker));
-	this->argc = argc;
-	this->argv = argv;
-
 	printf("%s, argc = %d\n", __func__, argc);
 }

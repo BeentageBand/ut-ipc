@@ -25,7 +25,7 @@ typedef union Gtest_Worker
  
 extern Gtest_Worker_Class_T _private Gtest_Worker_Class;
 
-extern void Populate_Gtest_Worker(union Gtest_Worker * const gtest_thread, IPC_TID_T const tid, int argc, char ** argv);
+extern void Init_Gtest_Worker(int argc, char ** argv);
 
 #ifdef __cplusplus
 }
