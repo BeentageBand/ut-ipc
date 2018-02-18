@@ -1,5 +1,3 @@
-#define CLASS_IMPLEMENTATION
- 
 #include "gtest/gtest.h"
 #include "mailbox.h"
  

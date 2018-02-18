@@ -61,7 +61,7 @@ TEST(Retrieve_mail, mail)
    union Mail mail = {NULL};
    IPC_Send(IPC_GTEST_1_WORKER_TID, IPC_GTEST_INT_MID, NULL, 0);
    IPC_Send(IPC_GTEST_2_WORKER_TID, IPC_GTEST_INT_MID, NULL, 0);
-   sleep(1);
+   IPC_Sleep(1000);
    for(uint8_t i = 2; i; --i)
    {
       ASSERT_TRUE(IPC_Retrieve_Mail(&mail, 2000));
@@ -82,20 +82,20 @@ TEST(Publish, mail)
 {
    IPC_Publish(IPC_GTEST_PBC_MID, NULL, 0);
 
-   if(IPC_Subscribe_Mailist(Gtest_Mailist, sizeof(Gtest_Mailist)) )
+   if(IPC_Subscribe_Mailist(Gtest_Mailist, Num_Elems(Gtest_Mailist)) )
    {
       union Mail mail = {NULL};
 
       for(uint8_t i = 2; i; --i)
       {
          EXPECT_TRUE( IPC_Retrieve_From_Mailist(&mail, 2000UL, Gtest_Mailist,
-               sizeof(Gtest_Mailist)) );
+               Num_Elems(Gtest_Mailist)) );
          EXPECT_EQ(mail.mid, IPC_GTEST_INT_MID);
       }
       EXPECT_FALSE(IPC_Retrieve_From_Mailist(&mail, IPC_RETRIEVE_TOUT_MS, Gtest_Mailist,
-                     sizeof(Gtest_Mailist)) );
+                     Num_Elems(Gtest_Mailist)) );
 
-      EXPECT_TRUE(IPC_Unsubscribe_Mailist(Gtest_Mailist, sizeof(Gtest_Mailist)) );
+      EXPECT_TRUE(IPC_Unsubscribe_Mailist(Gtest_Mailist, Num_Elems(Gtest_Mailist)) );
    }
    else
    {

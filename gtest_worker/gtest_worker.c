@@ -61,7 +61,7 @@ void gtest_worker_on_stop(union Worker * const super)
 
 int main(int argc, char ** argv)
 {
-	printf("Init with %d args\n", argc);
+	Dbg_Info("Init with %d args", argc);
 	static IPC_POSIX_T posix_helper = {NULL};
 	Populate_IPC_POSIX(&posix_helper);
 	IPC_Helper_Append(&posix_helper.IPC_Helper);
@@ -73,6 +73,8 @@ int main(int argc, char ** argv)
 
 	IPC_Run(GTEST_FWK_WORKER_TID);
 	IPC_Wait(GTEST_FWK_WORKER_TID, 15000);
+
+	Dbg_Info("main end");
 	while(1){}
 }
  
@@ -85,5 +87,5 @@ void Init_Gtest_Worker(int argc, char ** argv)
 		Gtest_Worker.argc = argc;
 		Gtest_Worker.argv = argv;
 	}
-	printf("%s, argc = %d\n", __func__, argc);
+	Dbg_Info("%s, argc = %d", __func__, argc);
 }
