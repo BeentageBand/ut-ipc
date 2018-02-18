@@ -37,8 +37,9 @@ void gtest_worker_delete(struct Object * const obj)
 
 void gtest_worker_on_start(union Worker * const super)
 {
-   Dbg_Info("Gtest_Worker_run");
    Gtest_Worker_T * const this = _cast(Gtest_Worker, super);
+   Isnt_Nullptr(this,)
+   Dbg_Info("Gtest_Worker_run argc = %d, argv = %ld", this->argc, (size_t)this->argv);
 
    IPC_Ready();
 
@@ -48,6 +49,7 @@ void gtest_worker_on_start(union Worker * const super)
 static void gtest_worker_on_mail(union Worker * const super, union Mail * const mail)
 {
 }
+
 void gtest_worker_on_loop(union Worker * const super)
 {
 	IPC_Sleep(500);
@@ -61,6 +63,7 @@ int main(int argc, char ** argv)
 {
 	Gtest_Worker_T gtest;
 
+	printf("Init with %d args\n", argc);
 	static IPC_POSIX_T posix_helper = {NULL};
 	Populate_IPC_POSIX(&posix_helper);
 	IPC_Helper_Append(&posix_helper.IPC_Helper);
@@ -86,4 +89,6 @@ void Populate_Gtest_Worker(union Gtest_Worker * const this, IPC_TID_T const tid,
 	memcpy(this, &Gtest_Worker, sizeof(Gtest_Worker));
 	this->argc = argc;
 	this->argv = argv;
+
+	printf("%s, argc = %d\n", __func__, argc);
 }

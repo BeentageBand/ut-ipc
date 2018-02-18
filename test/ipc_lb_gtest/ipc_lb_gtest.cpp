@@ -113,7 +113,7 @@ TEST(Shutdown, mail)
 
 int Gtest_Worker_Cbk(int argc, char ** argv)
 {
-   std::cout << "Gtest_Worker_Cbk main()\n";
+   std::cout << "Gtest_Worker_Cbk main()\n argv = " << argc;
    testing::InitGoogleTest(&argc, argv);
    return RUN_ALL_TESTS();
 }
