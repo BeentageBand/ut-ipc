@@ -37,7 +37,7 @@ void Populate_IPC_Gtest_Worker(IPC_Gtest_Worker_T * const this, IPC_TID_T const 
 {
 	if(NULL == IPC_Gtest_Worker.vtbl)
 	{
-		Populate_Worker(&IPC_Gtest_Worker, tid, mail_buff, mail_size);
+		Populate_Worker(&IPC_Gtest_Worker, IPC_MAX_TID, NULL, 0);
 		Object_Init(&IPC_Gtest_Worker.Object, &IPC_Gtest_Worker_Class.Class, sizeof(IPC_Gtest_Worker_Class));
 
 		IPC_Gtest_Worker_Class.on_mail = ipc_gtest_worker_on_mail;
@@ -45,7 +45,9 @@ void Populate_IPC_Gtest_Worker(IPC_Gtest_Worker_T * const this, IPC_TID_T const 
 		IPC_Gtest_Worker_Class.on_loop = ipc_gtest_worker_on_loop;
 		IPC_Gtest_Worker_Class.on_stop = ipc_gtest_worker_on_stop;
 	}
-	memcpy(this, &IPC_Gtest_Worker, sizeof(IPC_Gtest_Worker));
+	Populate_Worker(this, tid, mail_buff, mail_size);
+	this->vtbl = &IPC_Gtest_Worker_Class;
+
 }
 
 void ipc_gtest_worker_on_start(Worker_T * const super)

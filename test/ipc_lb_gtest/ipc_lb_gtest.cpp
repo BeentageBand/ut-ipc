@@ -34,7 +34,7 @@ TEST(Init, tasks)
 	//Task_Register_To_Process(NULL);
 	Populate_Mailbox(&mbx, GTEST_FWK_WORKER_TID, gtest_mailbox, Num_Elems(gtest_mailbox));
 
-	IPC_Register_Mailbox(&mbx);
+//	IPC_Register_Mailbox(&mbx);
 	IPC_Ready();
 
 	IPC_Run(IPC_GTEST_1_WORKER_TID);

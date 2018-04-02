@@ -65,13 +65,10 @@ int main(int argc, char ** argv)
 	static IPC_POSIX_T posix_helper = {NULL};
 	Populate_IPC_POSIX(&posix_helper);
 	IPC_Helper_Append(&posix_helper.IPC_Helper);
-
-	union Thread thrd = {NULL};
-
 	Init_Gtest_Worker(argc, argv);
-	Populate_Thread(&thrd, IPC_GTEST_2_WORKER_TID);
-
 	IPC_Run(GTEST_FWK_WORKER_TID);
+	Dbg_Info("Wait GTEST_FWK_WORKER_TID");
+	while(1){}
 	IPC_Wait(GTEST_FWK_WORKER_TID, 15000);
 
 	Dbg_Info("main end");
