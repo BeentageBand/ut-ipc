@@ -62,11 +62,13 @@ TEST(Retrieve_mail, mail)
    IPC_Send(IPC_GTEST_1_WORKER_TID, IPC_GTEST_INT_MID, NULL, 0);
    IPC_Send(IPC_GTEST_2_WORKER_TID, IPC_GTEST_INT_MID, NULL, 0);
    IPC_Sleep(1000);
-   for(uint8_t i = 2; i; --i)
-   {
-      ASSERT_TRUE(IPC_Retrieve_Mail(&mail, 2000));
+   uint8_t i = 2;
+   while(i--)
+     {
+       bool is_ret = IPC_Retrieve_Mail(&mail, 2000);
+      ASSERT_TRUE(is_ret);
       EXPECT_EQ(mail.mid, IPC_GTEST_INT_MID);
-   }
+     }
 }
 
 TEST(Retrieve_Mail, timeout)
