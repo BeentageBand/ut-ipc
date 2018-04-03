@@ -59,7 +59,7 @@ void ipc_gtest_worker_on_start(Worker_T * const super)
 
 void ipc_gtest_worker_on_mail(Worker_T * const super, union Mail * const mail)
 {
-	Dbg_Info("mail not null mid %d", mail->mid);
+	Dbg_Info("Worker %d: mail not null mid %d", super->Thread.tid, mail->mid);
 
 	switch(mail->mid)
 	{
