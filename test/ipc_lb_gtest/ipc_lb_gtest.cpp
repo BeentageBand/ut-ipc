@@ -25,23 +25,21 @@ static union Mail w2_mailbox[64] = {0};
 
 TEST(Init, tasks)
 {
-	static union Mail gtest_mailbox [64] = {0};
-	static union Mailbox mbx = {NULL};
+   static union Mail gtest_mailbox [64] = {0};
+   static union Mailbox mbx = {NULL};
 
-	Populate_IPC_Gtest_Worker(&w1, IPC_GTEST_1_WORKER_TID, w1_mailbox, Num_Elems(w1_mailbox));
-	Populate_IPC_Gtest_Worker(&w2, IPC_GTEST_2_WORKER_TID, w2_mailbox, Num_Elems(w2_mailbox));
+   Populate_IPC_Gtest_Worker(&w1, IPC_GTEST_1_WORKER_TID, w1_mailbox, Num_Elems(w1_mailbox));
+   Populate_IPC_Gtest_Worker(&w2, IPC_GTEST_2_WORKER_TID, w2_mailbox, Num_Elems(w2_mailbox));
 
-	//Task_Register_To_Process(NULL);
-	Populate_Mailbox(&mbx, GTEST_FWK_WORKER_TID, gtest_mailbox, Num_Elems(gtest_mailbox));
+   Populate_Mailbox(&mbx, GTEST_FWK_WORKER_TID, gtest_mailbox, Num_Elems(gtest_mailbox));
 
-//	IPC_Register_Mailbox(&mbx);
-	IPC_Ready();
+   IPC_Ready();
 
-	IPC_Run(IPC_GTEST_1_WORKER_TID);
-	IPC_Run(IPC_GTEST_2_WORKER_TID);
+   IPC_Run(IPC_GTEST_1_WORKER_TID);
+   IPC_Run(IPC_GTEST_2_WORKER_TID);
 
-	sleep(1);
-	ASSERT_EQ(GTEST_FWK_WORKER_TID, IPC_Self());
+   sleep(1);
+   ASSERT_EQ(GTEST_FWK_WORKER_TID, IPC_Self());
 }
 
 TEST(Timestamp, functions)
@@ -75,25 +73,21 @@ TEST(Retrieve_Mail, timeout)
 {
    IPC_Clock_T timestamp = IPC_RETRIEVE_TOUT_MS + IPC_Clock();
    union Mail mail = {NULL};
-   EXPECT_TRUE( IPC_Retrieve_Mail(&mail, IPC_RETRIEVE_TOUT_MS) );
+   EXPECT_FALSE( IPC_Retrieve_Mail(&mail, IPC_RETRIEVE_TOUT_MS) );
    sleep(1);
    EXPECT_TRUE(IPC_Clock_Elapsed(timestamp));
 }
 
 TEST(Publish, mail)
 {
-   IPC_Publish(IPC_GTEST_PBC_MID, NULL, 0);
-
    if(IPC_Subscribe_Mailist(Gtest_Mailist, Num_Elems(Gtest_Mailist)) )
    {
+     IPC_Publish(IPC_GTEST_PBC_MID, NULL, 0);
       union Mail mail = {NULL};
 
-      for(uint8_t i = 2; i; --i)
-      {
-         EXPECT_TRUE( IPC_Retrieve_From_Mailist(&mail, 2000UL, Gtest_Mailist,
-               Num_Elems(Gtest_Mailist)) );
-         EXPECT_EQ(mail.mid, IPC_GTEST_INT_MID);
-      }
+      EXPECT_TRUE( IPC_Retrieve_From_Mailist(&mail, 2000UL, Gtest_Mailist,
+         Num_Elems(Gtest_Mailist)) );
+      EXPECT_EQ(mail.mid, IPC_GTEST_PBC_MID);
       EXPECT_FALSE(IPC_Retrieve_From_Mailist(&mail, IPC_RETRIEVE_TOUT_MS, Gtest_Mailist,
                      Num_Elems(Gtest_Mailist)) );
 
@@ -106,11 +100,20 @@ TEST(Publish, mail)
 }
 
 
-TEST(Shutdown, mail)
+TEST(ZShutdown, mail)
 {
-   IPC_Publish(WORKER_INT_SHUTDOWN_MID, NULL, 0);
-//   IPC_Wait(IPC_GTEST_1_WORKER);
-//   IPC_Wait(IPC_GTEST_2_WORKER);
+	IPC_Send(IPC_GTEST_1_WORKER_TID, WORKER_INT_SHUTDOWN_MID, NULL, 0);
+	IPC_Send(IPC_GTEST_2_WORKER_TID, WORKER_INT_SHUTDOWN_MID, NULL, 0);
+
+	IPC_Clock_T clock = IPC_Clock();
+	IPC_Clock_T timeout = 5000U;
+	IPC_Wait(IPC_GTEST_2_WORKER_TID, timeout);
+
+	EXPECT_FALSE(IPC_Clock_Elapsed(clock + timeout));
+
+    clock = IPC_Clock();
+	IPC_Wait(IPC_GTEST_2_WORKER_TID, timeout);
+	EXPECT_FALSE(IPC_Clock_Elapsed(clock + timeout));
 }
 
 int Gtest_Worker_Cbk(int argc, char ** argv)
