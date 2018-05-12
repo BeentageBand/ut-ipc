@@ -112,7 +112,7 @@ TEST(ZShutdown, mail)
 	EXPECT_FALSE(IPC_Clock_Elapsed(clock + timeout));
 
     clock = IPC_Clock();
-	IPC_Wait(IPC_GTEST_2_WORKER_TID, timeout);
+	IPC_Wait(IPC_GTEST_1_WORKER_TID, timeout);
 	EXPECT_FALSE(IPC_Clock_Elapsed(clock + timeout));
 }
 

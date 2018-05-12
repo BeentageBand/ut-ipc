@@ -6,8 +6,8 @@ mail_gtest \
 ipc_lb_gtest \
 dbg_log_gtest \
 ipc_gtest \
-mailbox_gtest \
 publisher_gtest \
+#mailbox_gtest \
 
 $(_flavor_)_$(_feat_)_bin_libs=\
 cobject \
