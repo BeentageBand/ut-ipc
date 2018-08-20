@@ -10,3 +10,4 @@ out
 .*.swp
 .screenrc
 tags
+.vscode
