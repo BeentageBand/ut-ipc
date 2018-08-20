@@ -10,12 +10,13 @@ publisher_gtest \
 #mailbox_gtest \
 
 $(_flavor_)_$(_feat_)_bin_libs=\
-cobject \
-dbg_log \
 gtest_worker \
 gtest \
+ipc_posix \
 ipc \
 ipc_gtest_worker \
+dbg_log \
+cobject \
 
 $(_flavor_)_$(_feat_)_bin=ipc_gtest
 endef
