@@ -17,6 +17,7 @@ ipc \
 ipc_gtest_worker \
 dbg_log \
 cobject \
+rt \
 
 $(_flavor_)_$(_feat_)_bin=ipc_gtest
 endef
