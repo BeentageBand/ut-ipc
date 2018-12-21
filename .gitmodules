@@ -19,3 +19,6 @@
 [submodule "ccipc"]
 	path = ccipc
 	url = git@github.com:BeentageBand/ccipc
+[submodule "ipc_common"]
+	path = ipc_common
+	url = git@github.com:BeentageBand/ipc_common.git

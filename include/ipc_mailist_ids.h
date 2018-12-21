@@ -2,7 +2,7 @@
 #define IPC_MAIL_LIST_H_
  
 #include "ipc_gtest_worker_evs.h"
-#include "worker_evs.h"
+#include "worker_mailist.h"
 
 #define IPC_INTERNAL_MAILIST(X) \
    IPC_GTEST_INT_MAILIST(X) \
