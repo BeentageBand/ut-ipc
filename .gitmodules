@@ -16,3 +16,6 @@
 [submodule "support/cobject"]
 	path = support/cobject
 	url = git@github.com:BeentageBand/cobject
+[submodule "ccipc"]
+	path = ccipc
+	url = git@github.com:BeentageBand/ccipc
