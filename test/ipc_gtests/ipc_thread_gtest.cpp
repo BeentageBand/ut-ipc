@@ -5,12 +5,13 @@ using namespace ::testing;
 using namespace cc;
 using namespace std;
 
-class Mock_Thread_Sem : public Thread::Sem 
+class Mock_Semaphore : public Semaphore
 {
     public:
-    MOCK_METHOD0(wait, void ());
-    MOCK_METHOD1(wait, void (uint32_t wait_ms));
-    MOCK_METHOD0(ready, void ());
+    MOCK_METHOD0(wait, bool ());
+    MOCK_METHOD1(wait, bool (IPC_Clock_T const wait_ms));
+    MOCK_METHOD0(signal, void ());
+    MOCK_METHOD1(signal, void (uint32_t const resource));
 };
 
 class Mock_Thread_Cbk : public Thread::Cbk
@@ -27,14 +28,14 @@ class Gtest_Thread : public Test
     public:
         IPC_TID_T tid;
         shared_ptr<Mock_Thread_Cbk> mock_cbk;
-        shared_ptr<Mock_Thread_Sem> mock_sem;
+        shared_ptr<Mock_Semaphore> mock_sem;
         shared_ptr<Thread> thread;
 
     void SetUp(void)
     {
         this->tid = IPC_GTEST_1_WORKER_TID;
         this->mock_cbk = make_shared<NiceMock<Mock_Thread_Cbk>>();
-        this->mock_sem = make_shared<NiceMock<Mock_Thread_Sem>>();
+        this->mock_sem = make_shared<NiceMock<Mock_Semaphore>>();
         this->thread = make_shared<Thread>(this->tid, this->mock_sem, this->mock_cbk);
     }
 
@@ -51,7 +52,7 @@ TEST(Thread, constructor)
     shared_ptr<NiceMock<Mock_Thread_Cbk>> mock_cbk = make_shared<NiceMock<Mock_Thread_Cbk>>();
     
     EXPECT_CALL(*mock_cbk, register_thread(_));
-    shared_ptr<Thread> thread =  make_shared<Thread>(IPC_GTEST_1_WORKER_TID, make_shared<NiceMock<Mock_Thread_Sem>>(), mock_cbk);
+    shared_ptr<Thread> thread =  make_shared<Thread>(IPC_GTEST_1_WORKER_TID, make_shared<NiceMock<Mock_Semaphore>>(), mock_cbk);
 
     ASSERT_TRUE(thread);
     ASSERT_EQ(thread->tid, IPC_GTEST_1_WORKER_TID);
@@ -59,8 +60,9 @@ TEST(Thread, constructor)
 
 TEST_F(Gtest_Thread, ready)
 {
+    using ::testing::_;
     ASSERT_TRUE(this->thread);
-    EXPECT_CALL(*this->mock_sem, ready());
+    EXPECT_CALL(*this->mock_sem, signal(_));
     this->thread->ready();
 }
 

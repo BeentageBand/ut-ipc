@@ -8,7 +8,9 @@ $(_flavor_)_$(_feat_)_bin_objs=\
 
 $(_flavor_)_$(_feat_)_bin_libs=\
 	ccipc \
-	gmock_main
+	gtest \
+	gmock \
+	gmock_main \
 
 $(_flavor_)_$(_feat_)_bin=ipc_gtests
 
