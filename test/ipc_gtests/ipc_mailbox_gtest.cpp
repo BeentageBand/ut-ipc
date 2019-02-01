@@ -57,7 +57,6 @@ TEST(Mailbox, constructor)
 
 TEST_F(Gtest_Mailbox, push_and_tail)
 {
-    using ::testing::Return;
     Mail mail(WORKER_INT_SHUTDOWN_MID, this->tid);
     EXPECT_CALL(*this->mock_mux, lock(200)).WillOnce(Return(true));
     EXPECT_CALL(*this->mock_cv, signal());
@@ -70,6 +69,17 @@ TEST_F(Gtest_Mailbox, push_and_tail)
 
     shared_ptr<Mail> rcv_mail = this->mailbox->tail(1000);
     ASSERT_TRUE(rcv_mail);
+    ASSERT_EQ(WORKER_INT_SHUTDOWN_MID, rcv_mail->mid);
+    ASSERT_EQ(this->tid, rcv_mail->get_sender());
+}
+
+TEST_F(Gtest_Mailbox, tail_timeout)
+{
+    EXPECT_CALL(*this->mock_mux, lock(1000)).WillOnce(Return(true))
+                                            .WillOnce(Return(false));
+
+    shared_ptr<Mail> rcv_mail = this->mailbox->tail(1000);
+    ASSERT_FALSE(rcv_mail);
 }
 
 TEST_F(Gtest_Mailbox, tail_with_mid)
