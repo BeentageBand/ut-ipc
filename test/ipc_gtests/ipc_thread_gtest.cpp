@@ -1,17 +1,16 @@
-#include "gmock/gmock.h"
+#include "ipc_factory_mock.h"
 #include "ccthread.h"
 
 using namespace ::testing;
 using namespace cc;
 using namespace std;
 
-class Mock_Semaphore : public Semaphore
+class Mock_Barrier : public Barrier
 {
     public:
-    MOCK_METHOD0(wait, bool ());
+    MOCK_METHOD0(wait, void ());
     MOCK_METHOD1(wait, bool (IPC_Clock_T const wait_ms));
-    MOCK_METHOD0(signal, void ());
-    MOCK_METHOD1(signal, void (uint32_t const resource));
+    MOCK_METHOD0(ready, void ());
 };
 
 class Mock_Thread_Cbk : public Thread::Cbk
@@ -28,15 +27,24 @@ class Gtest_Thread : public Test
     public:
         IPC_TID_T tid;
         shared_ptr<Mock_Thread_Cbk> mock_cbk;
-        shared_ptr<Mock_Semaphore> mock_sem;
+        shared_ptr<Mock_Barrier> mock_barrier;
         shared_ptr<Thread> thread;
+        NiceMock<Mock_Factory> mock_factory;
 
     void SetUp(void)
     {
+        using ::testing::_;
         this->tid = IPC_GTEST_1_WORKER_TID;
         this->mock_cbk = make_shared<NiceMock<Mock_Thread_Cbk>>();
-        this->mock_sem = make_shared<NiceMock<Mock_Semaphore>>();
-        this->thread = make_shared<Thread>(this->tid, this->mock_sem, this->mock_cbk);
+        this->mock_barrier = make_shared<NiceMock<Mock_Barrier>>();
+
+        EXPECT_CALL(this->mock_factory, create_thread_cbk()).WillRepeatedly(Return(this->mock_cbk));
+        EXPECT_CALL(this->mock_factory, create_barrier(_)).WillRepeatedly(Return(this->mock_barrier));
+        EXPECT_CALL(*this->mock_cbk, register_thread(_)).WillOnce(Return(0));
+
+        this->thread = make_shared<Thread>(this->tid, 4, this->mock_factory);
+        ASSERT_TRUE(thread);
+        ASSERT_EQ(thread->tid, IPC_GTEST_1_WORKER_TID);
     }
 
     void TearDown(void)
@@ -51,19 +59,11 @@ TEST(Thread, constructor)
 
     shared_ptr<NiceMock<Mock_Thread_Cbk>> mock_cbk = make_shared<NiceMock<Mock_Thread_Cbk>>();
     
-    EXPECT_CALL(*mock_cbk, register_thread(_));
-    shared_ptr<Thread> thread =  make_shared<Thread>(IPC_GTEST_1_WORKER_TID, make_shared<NiceMock<Mock_Semaphore>>(), mock_cbk);
+    EXPECT_CALL(*mock_cbk, register_thread(_)).WillOnce(Return(0));
+    shared_ptr<Thread> thread =  make_shared<Thread>(IPC_GTEST_1_WORKER_TID, make_shared<NiceMock<Mock_Barrier>>(), mock_cbk);
 
     ASSERT_TRUE(thread);
     ASSERT_EQ(thread->tid, IPC_GTEST_1_WORKER_TID);
-}
-
-TEST_F(Gtest_Thread, ready)
-{
-    using ::testing::_;
-    ASSERT_TRUE(this->thread);
-    EXPECT_CALL(*this->mock_sem, signal(_));
-    this->thread->ready();
 }
 
 TEST_F(Gtest_Thread, run)
@@ -76,10 +76,23 @@ TEST_F(Gtest_Thread, run)
 TEST_F(Gtest_Thread, wait)
 {
     using ::testing::_;
-    EXPECT_CALL(*this->mock_sem, wait());
+    EXPECT_CALL(*this->mock_barrier, wait());
     this->thread->wait();
-    EXPECT_CALL(*this->mock_sem, wait(1000));
-    this->thread->wait(1000);
+    EXPECT_CALL(*this->mock_barrier, wait(1000)).WillOnce(Return(true));
+    EXPECT_TRUE(this->thread->wait(1000));
+}
+
+TEST_F(Gtest_Thread, join)
+{
+    EXPECT_CALL(*this->mock_cbk, join_thread());
+    this->thread->join();
+}
+
+
+TEST_F(Gtest_Thread, ready)
+{
+    EXPECT_CALL(*this->mock_barrier, ready());
+    this->thread->ready();
 }
 
 TEST_F(Gtest_Thread, delete)
