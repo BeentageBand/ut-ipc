@@ -5,6 +5,7 @@ $(_flavor_)_$(_feat_)_bin_objs=\
 	ipc_thread_gtest \
 	ipc_mail_gtest \
 	ipc_mailbox_gtest \
+	ipc_publisher_gtest
 
 $(_flavor_)_$(_feat_)_bin_libs=\
 	ccipc \

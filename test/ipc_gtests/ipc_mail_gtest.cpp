@@ -6,7 +6,7 @@ using namespace std;
 
 TEST(CCMail, constructor)
 {
-    Mail mail(WORKER_INT_SHUTDOWN_MID, IPC_GTEST_1_WORKER_TID);
+    Mail mail(WORKER_INT_SHUTDOWN_MID, IPC_GTEST_1_WORKER_TID, IPC_GTEST_1_WORKER_TID);
     ASSERT_EQ(WORKER_INT_SHUTDOWN_MID, mail.mid);
     ASSERT_EQ(IPC_GTEST_1_WORKER_TID , mail.get_receiver());
 }
@@ -30,14 +30,4 @@ TEST(Builder, constructor)
     EXPECT_EQ(sizeof(payload), mail.get_payload_size());
     mail.get_payload() >> payload;
     ASSERT_EQ(payload, 25);
-}
-
-TEST(CCMail, set_sender)
-{
-    Mail mail(WORKER_INT_SHUTDOWN_MID, IPC_GTEST_1_WORKER_TID);
-
-    EXPECT_EQ(IPC_MAX_TID, mail.get_sender());
-    mail.set_sender(IPC_GTEST_2_WORKER_TID);
-
-    EXPECT_EQ(IPC_GTEST_2_WORKER_TID, mail.get_sender());
 }

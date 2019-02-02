@@ -5,13 +5,6 @@ using namespace cc;
 using namespace std;
 using namespace ::testing;
 
-class Mock_Mux : public Mutex
-{
-    public:
-    MOCK_METHOD1(lock, bool (uint32_t const tout_ms));
-    MOCK_METHOD0(unlock, void ());
-};
-
 class Mock_Cond_Var : public Cond_Var
 {
     public:
@@ -57,7 +50,7 @@ TEST(Mailbox, constructor)
 
 TEST_F(Gtest_Mailbox, push_and_tail)
 {
-    Mail mail(WORKER_INT_SHUTDOWN_MID, this->tid);
+    Mail mail(WORKER_INT_SHUTDOWN_MID, this->tid, IPC_GTEST_1_WORKER_TID);
     EXPECT_CALL(*this->mock_mux, lock(200)).WillOnce(Return(true));
     EXPECT_CALL(*this->mock_cv, signal());
     EXPECT_CALL(*this->mock_mux, unlock());
