@@ -53,19 +53,6 @@ class Gtest_Thread : public Test
 
 };
 
-TEST(Thread, constructor)
-{
-    using ::testing::_;
-
-    shared_ptr<NiceMock<Mock_Thread_Cbk>> mock_cbk = make_shared<NiceMock<Mock_Thread_Cbk>>();
-    
-    EXPECT_CALL(*mock_cbk, register_thread(_)).WillOnce(Return(0));
-    shared_ptr<Thread> thread =  make_shared<Thread>(IPC_GTEST_1_WORKER_TID, make_shared<NiceMock<Mock_Barrier>>(), mock_cbk);
-
-    ASSERT_TRUE(thread);
-    ASSERT_EQ(thread->tid, IPC_GTEST_1_WORKER_TID);
-}
-
 TEST_F(Gtest_Thread, run)
 {
     using ::testing::_;

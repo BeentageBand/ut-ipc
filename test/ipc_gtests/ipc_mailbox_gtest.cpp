@@ -36,18 +36,6 @@ class Gtest_Mailbox : public Test
     }
 };
 
-TEST(Mailbox, constructor)
-{
-    using ::testing::_;
-    shared_ptr<Mock_Mux> mock_mux = make_shared<NiceMock<Mock_Mux>>();
-    shared_ptr<Mock_Cond_Var> mock_cv = make_shared<NiceMock<Mock_Cond_Var>>();
-
-    EXPECT_CALL(*mock_cv, with_mutex(_)).WillOnce(Return(true));
-
-    shared_ptr<Mailbox> mailbox = make_shared<Mailbox>(IPC_GTEST_1_WORKER_TID, mock_mux, mock_cv);
-    ASSERT_EQ(mailbox->tid, IPC_GTEST_1_WORKER_TID);
-}
-
 TEST_F(Gtest_Mailbox, push_and_tail)
 {
     Mail mail(WORKER_INT_SHUTDOWN_MID, this->tid, IPC_GTEST_1_WORKER_TID);
