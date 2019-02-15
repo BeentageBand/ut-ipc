@@ -5,23 +5,6 @@ using namespace ::testing;
 using namespace cc;
 using namespace std;
 
-class Mock_Barrier : public Barrier
-{
-    public:
-    MOCK_METHOD0(wait, void ());
-    MOCK_METHOD1(wait, bool (IPC_Clock_T const wait_ms));
-    MOCK_METHOD0(ready, void ());
-};
-
-class Mock_Thread_Cbk : public Thread::Cbk
-{
-    public:
-    MOCK_METHOD1(register_thread, int (Thread & thread));
-    MOCK_METHOD1(create_thread, int (Thread & thread));
-    MOCK_METHOD1(cancel_thread, int (void *& exit ));
-    MOCK_METHOD0(join_thread, int());
-};
-
 class Gtest_Thread : public Test
 {
     public:
@@ -29,7 +12,6 @@ class Gtest_Thread : public Test
         shared_ptr<Mock_Thread_Cbk> mock_cbk;
         shared_ptr<Mock_Barrier> mock_barrier;
         shared_ptr<Thread> thread;
-        NiceMock<Mock_Factory> mock_factory;
 
     void SetUp(void)
     {
@@ -38,17 +20,13 @@ class Gtest_Thread : public Test
         this->mock_cbk = make_shared<NiceMock<Mock_Thread_Cbk>>();
         this->mock_barrier = make_shared<NiceMock<Mock_Barrier>>();
 
-        EXPECT_CALL(this->mock_factory, create_thread_cbk()).WillRepeatedly(Return(this->mock_cbk));
-        EXPECT_CALL(this->mock_factory, create_barrier(_)).WillRepeatedly(Return(this->mock_barrier));
+        EXPECT_CALL(*Mock_IPC::get().mock_factory, create_thread_cbk()).WillRepeatedly(Return(this->mock_cbk));
+        EXPECT_CALL(*Mock_IPC::get().mock_factory, create_barrier(_)).WillRepeatedly(Return(this->mock_barrier));
         EXPECT_CALL(*this->mock_cbk, register_thread(_)).WillOnce(Return(0));
 
-        this->thread = make_shared<Thread>(this->tid, 4, this->mock_factory);
+        this->thread = make_shared<Thread>(this->tid, 4, *Mock_IPC::get().mock_factory);
         ASSERT_TRUE(thread);
         ASSERT_EQ(thread->tid, IPC_GTEST_1_WORKER_TID);
-    }
-
-    void TearDown(void)
-    {
     }
 
 };
