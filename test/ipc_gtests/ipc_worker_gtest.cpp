@@ -30,8 +30,26 @@ class Worker_Gtest : public Test
 
 TEST_F(Worker_Gtest, runnable)
 {
-    EXPECT_CALL(*this->mock_cbk, create_thread(_));
+    Mail::Builder builder;
+    builder.with_mid(WORKER_INT_SHUTDOWN_MID);
+    builder.with_sender(IPC_MAIN_TID);
+    builder.with_receiver(IPC_MAIN_TID);
+    shared_ptr<Mail> mail = make_shared<Mail>(builder.build());
+
+    shared_ptr<NiceMock<Mock_Retriever>> mock_retriever = make_shared<NiceMock<Mock_Retriever>>();
+    shared_ptr<NiceMock<Mock_Mux>> mock_mux = make_shared<NiceMock<Mock_Mux>>();
+    shared_ptr<NiceMock<Mock_Cond_Var>> mock_cv = make_shared<NiceMock<Mock_Cond_Var>>();
+
+    EXPECT_CALL(*Mock_IPC::get().mock_factory, create_mutex()).WillOnce(Return(mock_mux));
+    EXPECT_CALL(*Mock_IPC::get().mock_factory, create_cond_var()).WillOnce(Return(mock_cv));
+
     EXPECT_CALL(*this->mock_bundle, on_start());
-    EXPECT_CALL(*this->mock_bundle, on_start());
-    this->worker->run();
+    EXPECT_CALL(*this->mock_barrier, ready());
+    EXPECT_CALL(*Mock_IPC::get().mock_factory, create_ipc_retriever(_, _)).WillOnce(Return(mock_retriever));
+
+    EXPECT_CALL(*mock_retriever, retrieve(200)).WillOnce(Return(mail));
+    EXPECT_CALL(*this->mock_bundle, on_mail(_));
+    EXPECT_CALL(*this->mock_bundle, on_stop());
+
+    this->worker->runnable();
 }

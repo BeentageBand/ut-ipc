@@ -34,6 +34,14 @@ class Mock_Thread_Cbk : public cc::Thread::Cbk
     MOCK_METHOD0(join_thread, int());
 };
 
+class Mock_Cond_Var : public cc::Cond_Var
+{
+    public:
+    MOCK_METHOD1(with_mutex, bool (std::shared_ptr<cc::Mutex> mux));
+    MOCK_METHOD1(wait, bool (uint32_t const wait_ms));
+    MOCK_METHOD0(signal, void ());
+};
+
 class Mock_Mux : public cc::Mutex
 {
     public:
@@ -57,6 +65,12 @@ class Mock_Sender : public cc::IPC::Sender
     {}
 
     MOCK_METHOD1(send, void (cc::Mail const & mail));
+};
+
+class Mock_Retriever : public cc::IPC::Retriever
+{
+    public:
+    MOCK_METHOD1(retrieve, std::shared_ptr<cc::Mail>(IPC_Clock_T const wait_ms));
 };
 
 class Mock_Bundle : public cc::Bundle

@@ -5,14 +5,6 @@ using namespace cc;
 using namespace std;
 using namespace ::testing;
 
-class Mock_Cond_Var : public Cond_Var
-{
-    public:
-    MOCK_METHOD1(with_mutex, bool (shared_ptr<Mutex> mux));
-    MOCK_METHOD1(wait, bool (uint32_t const wait_ms));
-    MOCK_METHOD0(signal, void ());
-};
-
 class Gtest_Mailbox : public Test
 {
     public:
