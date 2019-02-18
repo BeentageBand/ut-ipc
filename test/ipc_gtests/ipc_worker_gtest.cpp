@@ -32,5 +32,6 @@ TEST_F(Worker_Gtest, runnable)
 {
     EXPECT_CALL(*this->mock_cbk, create_thread(_));
     EXPECT_CALL(*this->mock_bundle, on_start());
+    EXPECT_CALL(*this->mock_bundle, on_start());
     this->worker->run();
 }

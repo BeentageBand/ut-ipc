@@ -24,6 +24,8 @@ TEST_F(Publisher_Gtest, subscribe)
     vector<IPC_MID_T> mid_list;
     mid_list.push_back(WORKER_INT_SHUTDOWN_MID);
 
+    ASSERT_FALSE(mid_list.empty());
+
     EXPECT_CALL(*Mock_IPC::get().mock_rw, wlock(200)).WillOnce(Return(true));
     EXPECT_CALL(*Mock_IPC::get().mock_rw, unlock());
     bool rc = pub.subscribe(mid_list.begin(), mid_list.end(), IPC_MAIN_TID);

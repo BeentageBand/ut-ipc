@@ -56,8 +56,7 @@ TEST_F(Gtest_Mailbox, push_and_tail)
 
 TEST_F(Gtest_Mailbox, tail_timeout)
 {
-    EXPECT_CALL(*this->mock_mux, lock(1000)).WillOnce(Return(true))
-                                            .WillOnce(Return(false));
+    EXPECT_CALL(*this->mock_mux, lock(1000)).WillOnce(Return(false));
 
     shared_ptr<Mail> rcv_mail = this->mailbox->tail(1000);
     ASSERT_FALSE(rcv_mail);
