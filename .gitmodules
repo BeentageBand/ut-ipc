@@ -22,3 +22,6 @@
 [submodule "ipc_common"]
 	path = ipc_common
 	url = git@github.com:BeentageBand/ipc_common.git
+[submodule "support/ccposix"]
+	path = support/ccposix
+	url = git@github.com:BeentageBand/ccposix.git

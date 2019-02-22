@@ -13,9 +13,9 @@ $(_flavor_)_$(_feat_)_bin_objs=\
 $(_flavor_)_$(_feat_)_bin_libs=\
 	ccipc \
 	dbg_log \
-	gtest \
 	gmock \
 	gmock_main \
+	gtest \
 
 $(_flavor_)_$(_feat_)_bin=ipc_gtests
 

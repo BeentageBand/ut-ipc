@@ -70,7 +70,7 @@ TEST_F(Publisher_Gtest, unsubscribe)
     ASSERT_TRUE(subscription.empty());
 
     EXPECT_CALL(*Mock_IPC::get().mock_rw, rlock(200)).WillRepeatedly(Return(true));
-    EXPECT_CALL(*Mock_IPC::get().mock_rw, unlock());
+    EXPECT_CALL(*Mock_IPC::get().mock_rw, unlock()).Times(2);
     auto found = subscription.find(IPC_MAIN_TID);
     ASSERT_TRUE(found == subscription.end());
 }
