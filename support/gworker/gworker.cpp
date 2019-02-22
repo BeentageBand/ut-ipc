@@ -31,7 +31,9 @@ class GBundle : public Bundle
 };
 
 GWorker::GWorker(IPC_TID_T const tid, Factory & factory)
-: cc::Worker(tid, 0, factory, make_shared<GBundle>(), IPC::get())
-{}
+: cc::Worker(tid, 0, factory, make_shared<GBundle>(), IPC::get(factory))
+{
+    Dbg_Info("GWorker::%s with tid %d", __func__, tid);
+}
 
 GWorker::~GWorker(void){}
